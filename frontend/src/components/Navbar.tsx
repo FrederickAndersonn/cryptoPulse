@@ -35,11 +35,11 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <Box bg={isDark ? 'gray.800' : 'brand.300'} color="white" px={4} py={2} width="100%">
+    <Box bg={isDark ? 'gray.800' : 'brand.300'} color={'white'} px={4} py={2} width="100%">
       <Flex justify="space-between" align="center" maxWidth="1200px" mx="auto">
         {isSmallScreen && (
           <IconButton
-            icon={<FaBars color="white" />}
+            icon={<FaBars color={'white'} />}
             aria-label="Open menu"
             onClick={onOpen}
             bg="transparent"
@@ -62,7 +62,7 @@ const Navbar: React.FC = () => {
               _hover={{ textDecoration: 'none', bg: 'teal.600', borderRadius: 'md', color: 'black' }}
               p={2}
             >
-              <FaHome color="white" />
+              <FaHome color={'white'} />
               <Box as="span" ml={2} fontSize="lg">
                 Home
               </Box>
@@ -77,7 +77,7 @@ const Navbar: React.FC = () => {
               _hover={{ textDecoration: 'none', bg: 'teal.600', borderRadius: 'md', color: 'black' }}
               p={2}
             >
-              <FaCoins color="white" />
+              <FaCoins color={'white'} />
               <Box as="span" ml={2} fontSize="lg">
                 Coins
               </Box>
@@ -94,7 +94,7 @@ const Navbar: React.FC = () => {
             <Link
               as={RouterLink}
               to="/login"
-              color="white"
+              color={'white'}
               mr={4}
               _hover={{ textDecoration: 'none', bg: 'teal.600', borderRadius: 'md', color: 'black' }}
               p={2}
@@ -106,7 +106,7 @@ const Navbar: React.FC = () => {
             <Link
               as={RouterLink}
               to="/signup"
-              color="white"
+              color={'white'}
               _hover={{ textDecoration: 'none', bg: 'teal.600', borderRadius: 'md', color: 'black' }}
               p={2}
             >
@@ -129,7 +129,7 @@ const Navbar: React.FC = () => {
       {/* Drawer for small screens */}
       <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent bg={isDark ? 'gray.800' : 'brand.300'} color={isDark ? 'white' : 'white'}>
           <DrawerCloseButton />
           <DrawerBody>
             <Flex direction="column" align="center">
@@ -137,7 +137,7 @@ const Navbar: React.FC = () => {
               <Link
                 as={RouterLink}
                 to="/"
-                color="white"
+                color={'white'}
                 display="block"
                 py={2}
                 onClick={onClose}
@@ -150,7 +150,7 @@ const Navbar: React.FC = () => {
               <Link
                 as={RouterLink}
                 to="/coins"
-                color="white"
+                color={'white'}
                 display="block"
                 py={2}
                 onClick={onClose}
@@ -163,7 +163,7 @@ const Navbar: React.FC = () => {
               <Link
                 as={RouterLink}
                 to="/login"
-                color="white"
+                color={'white'}
                 display="block"
                 py={2}
                 onClick={onClose}
@@ -176,7 +176,7 @@ const Navbar: React.FC = () => {
               <Link
                 as={RouterLink}
                 to="/signup"
-                color="white"
+                color={'white'}
                 display="block"
                 py={2}
                 onClick={onClose}

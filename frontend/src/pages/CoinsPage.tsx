@@ -1,12 +1,13 @@
 import React from 'react';
 import CoinTable from '../components/CoinTable';
+import { Box, Heading } from '@chakra-ui/react';
 
 const CoinsPage: React.FC = () => {
   return (
-    <div className="coins-page">
-      <h1>All Coins</h1>
+    <Box p={4}>
+      <Heading mb={4}>All Coins</Heading>
       <CoinTable />
-    </div>
+    </Box>
   );
 };
 

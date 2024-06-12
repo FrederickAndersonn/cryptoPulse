@@ -90,15 +90,16 @@ const ShowGraph: React.FC = () => {
                 <Area
                   type="monotone"
                   dataKey="Price"
-                  stroke="#8884d8"
-                  fill="#8884d8"
+                  stroke={isDark ? "#82ca9d" : "#8884d8"}
+                  fill={isDark ? "#82ca9d" : "#8884d8"}
                 />
               </AreaChart>
             )}
           </Center>
           {coinData?.market_data && (
             <Center>
-              <Box bg="white" p={4} borderRadius="md" boxShadow="md" textAlign="center">
+              <Box bg={isDark ? "gray.700" : "white"}
+                color={isDark ? "white" : "black"} p={4} borderRadius="md" boxShadow="md" textAlign="center">
                 <Heading as="h2" size="lg" mb={4}>{coinData.name} Price Statistics</Heading>
                 <Table variant="simple">
                   <Tbody>

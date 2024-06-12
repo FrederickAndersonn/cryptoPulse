@@ -14,6 +14,8 @@ import {
   Input,
   Text,
   Heading,
+  useColorMode,
+  useColorModeValue,
 } from '@chakra-ui/react';
 
 const CoinTable: React.FC = () => {
@@ -21,6 +23,11 @@ const CoinTable: React.FC = () => {
   const [searchWord, setSearchWord] = useState<string>('');
   const [bitcoinPrice, setBitcoinPrice] = useState<number>(0);
   const navigate = useNavigate();
+  const { colorMode } = useColorMode();
+  const bg = useColorModeValue('gray.50', 'gray.800');
+  const tableBg = useColorModeValue('white', 'gray.700');
+  const hoverBg = useColorModeValue('gray.200', 'gray.600');
+  const textColor = useColorModeValue('black', 'white');
 
   useEffect(() => {
     coinData()
@@ -42,28 +49,35 @@ const CoinTable: React.FC = () => {
   };
 
   return (
-    <Box width="100%" p={4} bg="gray.50" minHeight="100vh">
-      <Heading as="h1" mb={4} textAlign="center">All Coins</Heading>
+    <Box width="100%" p={4} bg={bg} minHeight="100vh">
+      <Heading as="h1" mb={4} textAlign="center" color={textColor}>All Coins</Heading>
       <Box mb={4}>
         <Input
           placeholder="Search..."
           onChange={(event) => setSearchWord(event.target.value)}
           size="lg"
           width="100%"
+          bg={tableBg}
+          color={textColor}
         />
       </Box>
-      <Table variant="simple" bg="white" borderRadius="lg" boxShadow="lg" width="100%">
+      <Table variant="simple" bg={tableBg} borderRadius="lg" boxShadow="lg" width="100%">
         <Thead>
           <Tr>
-            <Th>Name</Th>
-            <Th>Symbol</Th>
-            <Th>Price in BTC</Th>
-            <Th>Price in USD</Th>
+            <Th color={textColor}>Name</Th>
+            <Th color={textColor}>Symbol</Th>
+            <Th color={textColor}>Price in BTC</Th>
+            <Th color={textColor}>Price in USD</Th>
           </Tr>
         </Thead>
         <Tbody>
           {filterCoins.map((coin) => (
-            <Tr key={coin.id} onClick={() => handleRowClick(coin.id)} cursor="pointer" _hover={{ bg: "gray.200" }}>
+            <Tr
+              key={coin.id}
+              onClick={() => handleRowClick(coin.id)}
+              cursor="pointer"
+              _hover={{ bg: hoverBg }}
+            >
               <Td>
                 <Box display="flex" alignItems="center">
                   <Image
@@ -72,12 +86,12 @@ const CoinTable: React.FC = () => {
                     boxSize="30px"
                     mr={2}
                   />
-                  <Text>{coin.name}</Text>
+                  <Text color={textColor}>{coin.name}</Text>
                 </Box>
               </Td>
-              <Td>{coin.symbol.toUpperCase()}</Td>
-              <Td>{bitcoinPrice ? (coin.current_price / bitcoinPrice).toFixed(12) : 'N/A'}</Td>
-              <Td>${coin.current_price.toFixed(2)}</Td>
+              <Td color={textColor}>{coin.symbol.toUpperCase()}</Td>
+              <Td color={textColor}>{bitcoinPrice ? (coin.current_price / bitcoinPrice).toFixed(12) : 'N/A'}</Td>
+              <Td color={textColor}>${coin.current_price.toFixed(2)}</Td>
             </Tr>
           ))}
         </Tbody>

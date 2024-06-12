@@ -37,10 +37,21 @@ const theme = extendTheme({
         padding: 0,
       },
       body: {
-        bg: mode('brand.100', 'brand.400')(props), // Use brand colors for background
-        color: mode('brand.400', 'brand.100')(props), // Use brand colors for text
+        bg: mode('brand.100', 'brand.300')(props), // Light mode: brand.100, Dark mode: brand.400
+        color: mode('brand.400', 'brand.100')(props), // Light mode: brand.400, Dark mode: brand.100
       },
     }),
+  },
+  components: {
+    Button: {
+      baseStyle: (props: GlobalStyleProps) => ({
+        bg: mode('brand.200', 'brand.300')(props), // Light mode: brand.200, Dark mode: brand.300
+        color: mode('brand.400', 'brand.100')(props), // Light mode: brand.400, Dark mode: brand.100
+        _hover: {
+          bg: mode('brand.300', 'brand.200')(props), // Light mode: brand.300, Dark mode: brand.200
+        },
+      }),
+    },
   },
 });
 

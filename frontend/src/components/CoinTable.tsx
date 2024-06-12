@@ -28,9 +28,9 @@ const CoinTable: React.FC = () => {
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
   const bg = useColorModeValue('gray.50', 'gray.800');
-  const tableBg = useColorModeValue('gray.30', 'gray.700');
-  const hoverBg = useColorModeValue('gray.200', 'gray.600');
-  const textColor = useColorModeValue('black', 'white');
+  const tableBg = useColorModeValue('white', 'gray.700'); // Light mode: white, Dark mode: gray.700
+  const hoverBg = useColorModeValue('gray.200', 'gray.600'); // Light mode: gray.200, Dark mode: gray.600
+  const textColor = useColorModeValue('black', 'white'); // Light mode: black, Dark mode: white
 
   useEffect(() => {
     coinData(page)
@@ -63,43 +63,56 @@ const CoinTable: React.FC = () => {
 
   return (
     <Box width="100%" p={4} bg={bg} minHeight="100vh">
-      <Heading as="h1" mb={4} textAlign="center">All Coins</Heading>
+      <Heading as="h1" mb={4} textAlign="center" color={textColor}>
+        All Coins
+      </Heading>
       <Box mb={4}>
         <Input
           placeholder="Search..."
           onChange={(event) => setSearchWord(event.target.value)}
           size="lg"
           width="100%"
+          bg={tableBg}
+          color={textColor}
         />
       </Box>
-      <Table variant="simple" bg="white" borderRadius="lg" boxShadow="lg" width="100%">
+      <Table variant="simple" bg={tableBg} borderRadius="lg" boxShadow="lg" width="100%">
         <Thead>
           <Tr>
-            <Th>Name</Th>
-            <Th>Symbol</Th>
-            <Th>Price in BTC</Th>
-            <Th>Price in USD</Th>
+            <Th color={textColor}>Name</Th>
+            <Th color={textColor}>Symbol</Th>
+            <Th color={textColor}>Price in BTC</Th>
+            <Th color={textColor}>Price in USD</Th>
           </Tr>
         </Thead>
         <Tbody>
           {filterCoins.map((coin) => (
-            <Tr key={coin.id} onClick={() => handleRowClick(coin.id)} cursor="pointer" _hover={{ bg: hoverBg }}>
+            <Tr
+              key={coin.id}
+              onClick={() => handleRowClick(coin.id)}
+              cursor="pointer"
+              _hover={{ bg: hoverBg }}
+            >
               <Td>
                 <Flex align="center">
                   <Image src={coin.image} alt={`${coin.name} Icon`} boxSize="30px" mr={2} />
-                  <Text>{coin.name}</Text>
+                  <Text color={textColor}>{coin.name}</Text>
                 </Flex>
               </Td>
-              <Td>{coin.symbol.toUpperCase()}</Td>
-              <Td>{bitcoinPrice ? (coin.current_price / bitcoinPrice).toFixed(12) : 'N/A'}</Td>
-              <Td>${coin.current_price.toFixed(2)}</Td>
+              <Td color={textColor}>{coin.symbol.toUpperCase()}</Td>
+              <Td color={textColor}>
+                {bitcoinPrice ? (coin.current_price / bitcoinPrice).toFixed(12) : 'N/A'}
+              </Td>
+              <Td color={textColor}>${coin.current_price.toFixed(2)}</Td>
             </Tr>
           ))}
         </Tbody>
       </Table>
       <Flex justifyContent="space-between" mt={4}>
-        <Button onClick={handlePreviousPage} disabled={page === 1}>Previous</Button>
-        <Text>Page {page}</Text>
+        <Button onClick={handlePreviousPage} disabled={page === 1}>
+          Previous
+        </Button>
+        <Text color={textColor}>Page {page}</Text>
         <Button onClick={handleNextPage}>Next</Button>
       </Flex>
     </Box>

@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 import userRoutes from './routes/userRoutes';
 import loginRoutes from './routes/loginRoutes';
 
-const mongourl = "mongodb://localhost:27017/cryptoPulse_db";
+const mongourl = "mongodb+srv://public:public@cluster0.jcpik0t.mongodb.net/ ";
 
 mongoose.connect(mongourl, { 
     useNewUrlParser: true, 

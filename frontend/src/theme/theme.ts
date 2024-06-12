@@ -30,6 +30,12 @@ const theme = extendTheme({
   fonts,
   styles: {
     global: (props: GlobalStyleProps) => ({
+      'html, body, #root': {
+        height: '100%',
+        width: '100%',
+        margin: 0,
+        padding: 0,
+      },
       body: {
         bg: mode('brand.100', 'brand.400')(props), // Use brand colors for background
         color: mode('brand.400', 'brand.100')(props), // Use brand colors for text

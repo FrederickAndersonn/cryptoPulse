@@ -9,7 +9,7 @@ import {
 } from "recharts";
 import { useParams } from 'react-router-dom';
 import graphData from "../data/graphData";
-import { Box, Image, Heading, Table, Tbody, Tr, Td, Switch, Flex, useColorMode, Text, Center } from '@chakra-ui/react';
+import { Box, Image, Heading, Table, Tbody, Tr, Td, Flex, useColorMode, Center, ButtonGroup, Button } from '@chakra-ui/react';
 
 interface CoinDetails {
   id: string;
@@ -35,19 +35,20 @@ interface GraphData {
 }
 
 const ShowGraph: React.FC = () => {
-  const [chartData, setChartData] = useState<GraphData[]>([]); // State to hold the fetched data
-  const [coinData, setCoinData] = useState<CoinDetails | null>(null); // State to hold the fetched data
+  const [chartData, setChartData] = useState<GraphData[]>([]);
+  const [originalChartData, setOriginalChartData] = useState<GraphData[]>([]);
+  const [coinData, setCoinData] = useState<CoinDetails | null>(null);
   const { id } = useParams<{ id: string }>();
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
+  const [chartInterval, setChartInterval] = useState<string>('all'); // State for chart interval selection
 
   useEffect(() => {
     if (id) {
-      // Fetch data when the component mounts
       graphData(id)
         .then((data) => {
-          // Set the fetched data to state
           setChartData(data.data);
+          setOriginalChartData(data.data); // Store original data
           setCoinData(data.dataDetails);
         })
         .catch((error) => {
@@ -56,11 +57,38 @@ const ShowGraph: React.FC = () => {
     }
   }, [id]);
 
+  // Function to filter chart data based on selected interval
+  const filterChartData = (data: GraphData[], interval: string): GraphData[] => {
+    const today = new Date();
+    switch (interval) {
+      case '1w':
+        const oneWeekAgo = new Date(today);
+        oneWeekAgo.setDate(today.getDate() - 7);
+        return data.filter(item => new Date(item.Date) >= oneWeekAgo);
+      case '1m':
+        const oneMonthAgo = new Date(today);
+        oneMonthAgo.setMonth(today.getMonth() - 1);
+        return data.filter(item => new Date(item.Date) >= oneMonthAgo);
+      case '1y':
+        const oneYearAgo = new Date(today);
+        oneYearAgo.setFullYear(today.getFullYear() - 1);
+        return data.filter(item => new Date(item.Date) >= oneYearAgo);
+      case 'all':
+      default:
+        return data;
+    }
+  };
+
+  // Handler for interval change
+  const handleIntervalChange = (interval: string) => {
+    setChartInterval(interval);
+    const filteredData = filterChartData(originalChartData, interval);
+    setChartData(filteredData);
+  };
+
   return (
     <>
       <Flex direction="column" minHeight="100vh" bg={isDark ? "gray.900" : "gray.100"}>
-        <Box display="flex" justifyContent="flex-end" p={4}>
-        </Box>
         <Box p={4} width="100%" maxWidth="1200px" mx="auto" textAlign="center">
           <Box mb={4} textAlign="center">
             {coinData && coinData.image && (
@@ -68,18 +96,22 @@ const ShowGraph: React.FC = () => {
             )}
             <Heading as="h1" size="xl">{coinData?.name} ({coinData?.symbol.toUpperCase()})</Heading>
           </Box>
+          {/* Interval selector buttons */}
+          <Center mb={4}>
+            <ButtonGroup variant="outline" spacing="4">
+              <Button onClick={() => handleIntervalChange('1w')}>1 W</Button>
+              <Button onClick={() => handleIntervalChange('1m')}>1 M</Button>
+              <Button onClick={() => handleIntervalChange('1y')}>1 Y</Button>
+              <Button onClick={() => handleIntervalChange('all')}>All</Button>
+            </ButtonGroup>
+          </Center>
           <Center mb={4}>
             {chartData.length > 0 && (
               <AreaChart
                 width={800}
                 height={400}
                 data={chartData}
-                margin={{
-                  top: 10,
-                  right: 30,
-                  left: 0,
-                  bottom: 0,
-                }}
+                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="Date" />

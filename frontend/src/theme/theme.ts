@@ -31,8 +31,8 @@ const theme = extendTheme({
   styles: {
     global: (props: GlobalStyleProps) => ({
       body: {
-        bg: mode('white', 'gray.800')(props),
-        color: mode('gray.800', 'whiteAlpha.900')(props),
+        bg: mode('brand.100', 'brand.400')(props), // Use brand colors for background
+        color: mode('brand.400', 'brand.100')(props), // Use brand colors for text
       },
     }),
   },

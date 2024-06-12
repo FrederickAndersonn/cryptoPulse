@@ -2,6 +2,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Box, ChakraProvider } from '@chakra-ui/react';
 import Navbar from './components/Navbar'; // Import the Navbar component
+import ShowGraph from './components/ShowGraph';
 
 import CoinsPage from './pages/CoinsPage';
 import theme from './theme/theme'; // Import the custom theme
@@ -14,6 +15,8 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/coins" element={<CoinsPage />} />
+            <Route path="/coin/:id" element={<ShowGraph />} />
+
           </Routes>
         </Box>
       </Router>

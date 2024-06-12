@@ -60,8 +60,6 @@ const ShowGraph: React.FC = () => {
     <>
       <Flex direction="column" minHeight="100vh" bg={isDark ? "gray.900" : "gray.100"}>
         <Box display="flex" justifyContent="flex-end" p={4}>
-          <Text>Dark Mode</Text>
-          <Switch ml={2} isChecked={isDark} onChange={toggleColorMode} />
         </Box>
         <Box p={4} width="100%" maxWidth="1200px" mx="auto" textAlign="center">
           <Box mb={4} textAlign="center">

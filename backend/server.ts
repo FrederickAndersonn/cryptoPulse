@@ -7,16 +7,15 @@ import mongoose from 'mongoose';
 import userRoutes from './routes/userRoutes';
 import loginRoutes from './routes/loginRoutes';
 
-const mongourl = "mongodb+srv://public:public@cluster0.jcpik0t.mongodb.net/ ";
+const mongourl = "mongodb+srv://public:public@cluster0.jcpik0t.mongodb.net/";
 
-mongoose.connect(mongourl, { 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true,
-    useCreateIndex: true // Add this line
-  })
+mongoose.connect(mongourl, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => console.log("Database connected!"))
   .catch(err => console.error("Database connection error:", err));
-  
+
 const app = express();
 
 app.use(cors());
@@ -31,6 +30,8 @@ app.use("/login", loginRoutes);
 app.get("*", (req: Request, res: Response) => res.sendFile(path.resolve(__dirname, "build", "index.html")));
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log("Cryptex has started on port", PORT);
+const server = app.listen(PORT, () => {
+  console.log("CryptoPulse has started on port", PORT);
 });
+
+export { app, server };

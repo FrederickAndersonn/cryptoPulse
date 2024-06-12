@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Coin } from '../models/coin';
 import { coinData } from '../data/coinData';
 import { useNavigate } from 'react-router-dom';
+import CoinGraph7Days from '../components/CoinGraph7days';
 import {
   Box,
   Table,
@@ -14,7 +15,6 @@ import {
   Input,
   Text,
   Heading,
-  useColorMode,
   useColorModeValue,
   Button,
   Flex
@@ -26,7 +26,6 @@ const CoinTable: React.FC = () => {
   const [bitcoinPrice, setBitcoinPrice] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   const navigate = useNavigate();
-  const { colorMode } = useColorMode();
   const bg = useColorModeValue('gray.50', 'gray.800');
   const tableBg = useColorModeValue('white', 'gray.700'); // Light mode: white, Dark mode: gray.700
   const hoverBg = useColorModeValue('gray.200', 'gray.600'); // Light mode: gray.200, Dark mode: gray.600
@@ -83,6 +82,7 @@ const CoinTable: React.FC = () => {
             <Th color={textColor}>Symbol</Th>
             <Th color={textColor}>Price in BTC</Th>
             <Th color={textColor}>Price in USD</Th>
+            <Th color={textColor}>Last 7 Days</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -104,6 +104,9 @@ const CoinTable: React.FC = () => {
                 {bitcoinPrice ? (coin.current_price / bitcoinPrice).toFixed(12) : 'N/A'}
               </Td>
               <Td color={textColor}>${coin.current_price.toFixed(2)}</Td>
+              <Td>
+                <CoinGraph7Days data={coin.last_7_days || []} />
+              </Td>
             </Tr>
           ))}
         </Tbody>

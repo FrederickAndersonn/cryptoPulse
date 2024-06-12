@@ -75,42 +75,44 @@ const CoinTable: React.FC = () => {
           color={textColor}
         />
       </Box>
-      <Table variant="simple" bg={tableBg} borderRadius="lg" boxShadow="lg" width="100%">
-        <Thead>
-          <Tr>
-            <Th color={textColor}>Name</Th>
-            <Th color={textColor}>Symbol</Th>
-            <Th color={textColor}>Price in BTC</Th>
-            <Th color={textColor}>Price in USD</Th>
-            <Th color={textColor}>Last 7 Days</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {filterCoins.map((coin) => (
-            <Tr
-              key={coin.id}
-              onClick={() => handleRowClick(coin.id)}
-              cursor="pointer"
-              _hover={{ bg: hoverBg }}
-            >
-              <Td>
-                <Flex align="center">
-                  <Image src={coin.image} alt={`${coin.name} Icon`} boxSize="30px" mr={2} />
-                  <Text color={textColor}>{coin.name}</Text>
-                </Flex>
-              </Td>
-              <Td color={textColor}>{coin.symbol.toUpperCase()}</Td>
-              <Td color={textColor}>
-                {bitcoinPrice ? (coin.current_price / bitcoinPrice).toFixed(12) : 'N/A'}
-              </Td>
-              <Td color={textColor}>${coin.current_price.toFixed(2)}</Td>
-              <Td>
-                <CoinGraph7Days data={coin.last_7_days || []} />
-              </Td>
+      <div style={{ overflowX: 'auto' }}>
+        <Table variant="simple" bg={tableBg} borderRadius="lg" boxShadow="lg" minWidth="100%">
+          <Thead>
+            <Tr>
+              <Th color={textColor}>Name</Th>
+              <Th color={textColor}>Symbol</Th>
+              <Th color={textColor}>Price in BTC</Th>
+              <Th color={textColor}>Price in USD</Th>
+              <Th color={textColor}>Last 7 Days</Th>
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {filterCoins.map((coin) => (
+              <Tr
+                key={coin.id}
+                onClick={() => handleRowClick(coin.id)}
+                cursor="pointer"
+                _hover={{ bg: hoverBg }}
+              >
+                <Td>
+                  <Flex align="center">
+                    <Image src={coin.image} alt={`${coin.name} Icon`} boxSize="30px" mr={2} />
+                    <Text color={textColor}>{coin.name}</Text>
+                  </Flex>
+                </Td>
+                <Td color={textColor}>{coin.symbol.toUpperCase()}</Td>
+                <Td color={textColor}>
+                  {bitcoinPrice ? (coin.current_price / bitcoinPrice).toFixed(12) : 'N/A'}
+                </Td>
+                <Td color={textColor}>${coin.current_price.toFixed(2)}</Td>
+                <Td>
+                  <CoinGraph7Days data={coin.last_7_days || []} />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </div>
       <Flex justifyContent="space-between" mt={4}>
         <Button onClick={handlePreviousPage} disabled={page === 1}>
           Previous

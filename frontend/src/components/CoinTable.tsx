@@ -2,6 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Coin } from '../models/coin';
 import { coinData } from '../data/coinData';
 import { Link } from 'react-router-dom';
+import {
+  Box,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Image,
+  Input,
+  Text,
+  Link as ChakraLink,
+} from '@chakra-ui/react';
 
 const CoinTable: React.FC = () => {
   const [coins, setCoins] = useState<Coin[]>([]);
@@ -24,45 +37,45 @@ const CoinTable: React.FC = () => {
   );
 
   return (
-    <div className="coin-table">
-      <div className='cryptoHeader'>
-        <input
-          className='searchBar'
-          type='text'
-          placeholder='Search...'
+    <Box width="100%" p={4} bg="gray.50" minHeight="100vh">
+      <Box mb={4}>
+        <Input
+          placeholder="Search..."
           onChange={(event) => setSearchWord(event.target.value)}
+          size="lg"
         />
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Symbol</th>
-            <th>Price in BTC</th>
-            <th>Price in USD</th>
-          </tr>
-        </thead>
-        <tbody>
+      </Box>
+      <Table variant="simple" bg="white" borderRadius="lg" boxShadow="lg">
+        <Thead>
+          <Tr>
+            <Th>Name</Th>
+            <Th>Symbol</Th>
+            <Th>Price in BTC</Th>
+            <Th>Price in USD</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
           {filterCoins.map((coin) => (
-            <tr key={coin.id}>
-              <td className='coin-cell'>
-                <Link to={`/${coin.id}`} className='coin-link'>
-                  <img
+            <Tr key={coin.id}>
+              <Td>
+                <ChakraLink as={Link} to={`/${coin.id}`} display="flex" alignItems="center">
+                  <Image
                     src={coin.image}
                     alt={`${coin.name} Icon`}
-                    className='coin-icon'
+                    boxSize="30px"
+                    mr={2}
                   />
-                  <span className='coin-name'>{coin.name}</span>
-                </Link>
-              </td>
-              <td>{coin.symbol.toUpperCase()}</td>
-              <td>{(coin.current_price / bitcoinPrice).toFixed(12)}</td>
-              <td>${coin.current_price}</td>
-            </tr>
+                  <Text>{coin.name}</Text>
+                </ChakraLink>
+              </Td>
+              <Td>{coin.symbol.toUpperCase()}</Td>
+              <Td>{(coin.current_price / bitcoinPrice).toFixed(12)}</Td>
+              <Td>${coin.current_price.toFixed(2)}</Td>
+            </Tr>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </Tbody>
+      </Table>
+    </Box>
   );
 };
 

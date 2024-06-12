@@ -16,6 +16,8 @@ import {
   Heading,
   useColorMode,
   useColorModeValue,
+  Button,
+  Flex
 } from '@chakra-ui/react';
 
 const CoinTable: React.FC = () => {
@@ -24,13 +26,14 @@ const CoinTable: React.FC = () => {
   const [bitcoinPrice, setBitcoinPrice] = useState<number>(0);
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
+  const [page, setPage] = useState<number>(1);
   const bg = useColorModeValue('gray.50', 'gray.800');
-  const tableBg = useColorModeValue('white', 'gray.700');
+  const tableBg = useColorModeValue('gray.30', 'gray.700');
   const hoverBg = useColorModeValue('gray.200', 'gray.600');
   const textColor = useColorModeValue('black', 'white');
 
   useEffect(() => {
-    coinData()
+    coinData(page)
       .then((data) => {
         setCoins(data.trending);
         setBitcoinPrice(data.priceBtc);
@@ -38,11 +41,20 @@ const CoinTable: React.FC = () => {
       .catch((error) => {
         console.error('Error setting coin data:', error);
       });
-  }, []);
+  }, [page]);
 
   const filterCoins = coins.filter((coin) =>
     coin.name.toLowerCase().includes(searchWord.toLowerCase())
   );
+
+  const handleNextPage = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage((prevPage) => prevPage - 1);
+    }
 
   const handleRowClick = (id: string) => {
     navigate(`/coin/${id}`);

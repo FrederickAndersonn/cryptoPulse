@@ -8,7 +8,7 @@ const Navbar: React.FC = () => {
   const isDark = colorMode === 'dark';
 
   return (
-    <Box bg={isDark ? 'gray.800' : 'teal.500'} color="white" px={4} py={2} width="100%">
+    <Box bg={isDark ? 'gray.800' : 'brand.300'} color="white" px={4} py={2} width="100%">
       <Flex justify="space-between" align="center" maxWidth="1200px" mx="auto">
         <Flex align="center">
           <Link as={RouterLink} to="/" display="flex" alignItems="center" mr={4} _hover={{ textDecoration: 'none', bg: 'teal.600', borderRadius: 'md' }} p={2}>

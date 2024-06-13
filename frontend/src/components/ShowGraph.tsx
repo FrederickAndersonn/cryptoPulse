@@ -86,6 +86,11 @@ const ShowGraph: React.FC = () => {
     setChartData(filteredData);
   };
 
+  const prices = chartData.map((point) => point.Price);
+  const minPrice = Math.floor(Math.min(...prices));
+  const maxPrice = Math.ceil(Math.max(...prices));
+
+
   return (
     <>
       <Flex direction="column" minHeight="100vh" bg={isDark ? "gray.900" : "gray.100"}>
@@ -96,7 +101,6 @@ const ShowGraph: React.FC = () => {
             )}
             <Heading as="h1" size="xl">{coinData?.name} ({coinData?.symbol.toUpperCase()})</Heading>
           </Box>
-          {/* Interval selector buttons */}
           <Center mb={4}>
             <ButtonGroup variant="outline" spacing="4">
               <Button onClick={() => handleIntervalChange('1w')}>1 W</Button>
@@ -108,14 +112,14 @@ const ShowGraph: React.FC = () => {
           <Center mb={4}>
             {chartData.length > 0 && (
               <AreaChart
-                width={800}
+                width={1000}
                 height={400}
                 data={chartData}
                 margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="Date" />
-                <YAxis />
+                <YAxis domain={[minPrice, maxPrice]} />
                 <Tooltip />
                 <Area
                   type="monotone"

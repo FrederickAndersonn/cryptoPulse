@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import {
   Box,
   Heading,
@@ -11,6 +12,7 @@ import {
   Input,
   useColorModeValue,
   Button,
+  IconButton,
 } from '@chakra-ui/react';
 
 interface Post {
@@ -22,6 +24,8 @@ interface Post {
     username: string;
   };
   date: string;
+  votes: number;
+  votedBy: { userId: string; vote: number }[];
 }
 
 const Forum: React.FC = () => {
@@ -29,6 +33,7 @@ const Forum: React.FC = () => {
   const [searchWord, setSearchWord] = React.useState<string>('');
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState<number>(1);
+  const [votedPosts, setVotedPosts] = React.useState<{ [key: string]: number }>({});
   const postsPerPage = 10;
   const navigate = useNavigate();
   const bg = useColorModeValue('gray.50', 'gray.900');
@@ -73,6 +78,45 @@ const Forum: React.FC = () => {
 
   const handlePostClick = (id: string) => {
     navigate(`/post/${id}`);
+  };
+
+  const handleVote = async (postId: string, vote: number) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found, please login first.');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:5001/posts/${postId}/vote`,
+        { vote },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Update the post votes locally
+      const updatedPost = response.data;
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === updatedPost._id ? updatedPost : post
+        )
+      );
+
+      // Handle vote toggling
+      setVotedPosts((prevVotedPosts) => {
+        const currentVote = prevVotedPosts[postId];
+        const newVote = currentVote === vote ? 0 : vote;
+        return {
+          ...prevVotedPosts,
+          [postId]: newVote,
+        };
+      });
+    } catch (error) {
+      console.error('Failed to vote on post:', error);
+    }
   };
 
   const truncateDescription = (description: string): string => {
@@ -128,6 +172,36 @@ const Forum: React.FC = () => {
             <Text mt={4} fontSize="sm" color="gray.500">
               By {post.author.username} on {new Date(post.date).toLocaleDateString()}
             </Text>
+            <Flex mt={2} justifyContent="space-between" alignItems="center">
+              <Text fontSize="sm" color={textColor}>
+                {post.votes} Votes
+              </Text>
+              <Flex>
+                <IconButton
+                  aria-label="Upvote post"
+                  icon={<FaArrowUp />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleVote(post._id, 1);
+                  }}
+                  size="sm"
+                  mr={2}
+                  bg={votedPosts[post._id] === 1 ? 'teal.500' : undefined}
+                  _hover={{ bg: 'teal.400' }}
+                />
+                <IconButton
+                  aria-label="Downvote post"
+                  icon={<FaArrowDown />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleVote(post._id, -1);
+                  }}
+                  size="sm"
+                  bg={votedPosts[post._id] === -1 ? 'red.500' : undefined}
+                  _hover={{ bg: 'red.400' }}
+                />
+              </Flex>
+            </Flex>
           </Box>
         ))}
       </Stack>

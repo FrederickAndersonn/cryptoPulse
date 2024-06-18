@@ -151,4 +151,49 @@ router.delete('/posts/:id', async (req: Request, res: Response) => {
   }
 });
 
+// Upvote or Downvote a post
+router.post('/posts/:postId/vote', async (req: Request, res: Response) => {
+  const userId = getUserIdFromToken(req);
+  const { vote } = req.body; // Expect vote to be 1 for upvote and -1 for downvote
+  if (!userId) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  if (![1, -1].includes(vote)) {
+    return res.status(400).send('Invalid vote value');
+  }
+
+  try {
+    const post = await Post.findById(req.params.postId);
+    if (!post) {
+      return res.status(404).send('Post not found');
+    }
+
+    const userObjectId = new Types.ObjectId(userId);
+    const existingVote = post.votedBy.find(v => v.userId.equals(userObjectId));
+
+    if (existingVote) {
+      if (existingVote.vote === vote) {
+        // User is toggling the same vote, so remove the vote
+        post.votes -= vote;
+        post.votedBy = post.votedBy.filter(v => !v.userId.equals(userObjectId));
+      } else {
+        // User is switching vote, so adjust the vote accordingly
+        post.votes += 2 * vote; // because it's effectively changing from -1 to +1 or vice versa
+        existingVote.vote = vote;
+      }
+    } else {
+      // User is voting for the first time
+      post.votes += vote;
+      post.votedBy.push({ userId: userObjectId, vote });
+    }
+
+    await post.save();
+    res.json(post);
+  } catch (err: any) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 export default router;

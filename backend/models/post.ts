@@ -10,6 +10,8 @@ interface IPost extends Document {
   description: string;
   date: Date;
   comments: Types.ObjectId[];
+  votes: number;
+  votedBy: { userId: Types.ObjectId; vote: number }[];
 }
 
 const postSchema = new Schema<IPost>({
@@ -25,12 +27,20 @@ const postSchema = new Schema<IPost>({
   heading: { type: String, required: true },
   description: { type: String, required: true },
   date: { type: Date, default: Date.now },
+  votes: { type: Number, default: 0 },
+  votedBy: [
+    {
+      userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+      vote: { type: Number, required: true }
+    }
+  ],
   comments: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Comment'
     }
   ]
+  
 });
 
 export default model<IPost>('Post', postSchema);

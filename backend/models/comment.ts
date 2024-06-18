@@ -7,8 +7,9 @@ interface IComment extends Document {
   };
   text: string;
   date: Date;
-  likes: number,
+  likes: number;
   likedBy: Types.ObjectId[];
+  dislikedBy: Types.ObjectId[]; // Added dislikedBy array
   post: {
     id: Types.ObjectId;
   };
@@ -27,6 +28,7 @@ const commentSchema = new Schema<IComment>({
   date: { type: Date, default: Date.now },
   likes: { type: Number, default: 0 },
   likedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  dislikedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }], // Added dislikedBy array
   post: {
     id: {
       type: Schema.Types.ObjectId,

@@ -112,7 +112,6 @@ router.delete('/deletecomment', async (req: Request, res: Response) => {
   }
 });
 
-// Like a comment
 router.post('/:commentId/like', async (req: Request, res: Response) => {
   const userId = getUserIdFromToken(req);
   if (!userId) {
@@ -124,11 +123,22 @@ router.post('/:commentId/like', async (req: Request, res: Response) => {
     if (!comment) {
       return res.status(404).send('Comment not found');
     }
-    if (comment.likedBy.includes(new Types.ObjectId(userId))) {
-      return res.status(400).send('User has already liked this comment');
+    const userObjectId = new Types.ObjectId(userId);
+
+    if (comment.likedBy.includes(userObjectId)) {
+      // User already liked the comment, undo the like
+      comment.likes -= 1;
+      comment.likedBy = comment.likedBy.filter((id) => !id.equals(userObjectId));
+    } else {
+      // User has not liked the comment yet
+      // Remove from dislikedBy if exists
+      if (comment.dislikedBy.includes(userObjectId)) {
+        comment.dislikedBy = comment.dislikedBy.filter((id) => !id.equals(userObjectId));
+      }
+
+      comment.likes += 1;
+      comment.likedBy.push(userObjectId);
     }
-    comment.likes += 1;
-    comment.likedBy.push(new Types.ObjectId(userId));
     await comment.save();
     res.json(comment);
   } catch (err: any) {
@@ -137,7 +147,6 @@ router.post('/:commentId/like', async (req: Request, res: Response) => {
   }
 });
 
-// Unlike a comment
 router.post('/:commentId/unlike', async (req: Request, res: Response) => {
   const userId = getUserIdFromToken(req);
   if (!userId) {
@@ -149,11 +158,23 @@ router.post('/:commentId/unlike', async (req: Request, res: Response) => {
     if (!comment) {
       return res.status(404).send('Comment not found');
     }
-    if (!comment.likedBy.includes(new Types.ObjectId(userId))) {
-      return res.status(400).send('User has not liked this comment');
+    const userObjectId = new Types.ObjectId(userId);
+
+    if (comment.dislikedBy.includes(userObjectId)) {
+      // User already disliked the comment, undo the dislike
+      comment.likes += 1; // Dislike undone, increase the likes count
+      comment.dislikedBy = comment.dislikedBy.filter((id) => !id.equals(userObjectId));
+    } else {
+      // User has not disliked the comment yet
+      // Remove from likedBy if exists
+      if (comment.likedBy.includes(userObjectId)) {
+        comment.likes -= 1;
+        comment.likedBy = comment.likedBy.filter((id) => !id.equals(userObjectId));
+      }
+
+      comment.likes -= 1;
+      comment.dislikedBy.push(userObjectId);
     }
-    comment.likes = Math.max(comment.likes - 1, 0); // Ensure likes don't go negative
-    comment.likedBy = comment.likedBy.filter((id) => !id.equals(new Types.ObjectId(userId)));
     await comment.save();
     res.json(comment);
   } catch (err: any) {
@@ -161,4 +182,5 @@ router.post('/:commentId/unlike', async (req: Request, res: Response) => {
     res.status(500).send('Server Error');
   }
 });
+
 export default router;

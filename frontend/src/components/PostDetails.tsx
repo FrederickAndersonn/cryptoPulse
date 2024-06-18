@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import {
   Box,
@@ -27,6 +27,8 @@ interface Comment {
   };
   date: string;
   likes: number;
+  likedBy: string[];
+  dislikedBy: string[];
 }
 
 interface Post {
@@ -36,7 +38,7 @@ interface Post {
   author: {
     id: string;
     username: string;
-    publicKey: string;  // Added publicKey here
+    publicKey: string;
   };
   date: string;
   comments: Comment[];
@@ -54,12 +56,15 @@ const PostDetails: React.FC = () => {
   const textColor = useColorModeValue('black', 'white');
   const formLabelColor = useColorModeValue('black', 'white');
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  const decoded: { user: { id: string } } | null = token ? jwtDecode(token) : null;
+  const userId = decoded ? decoded.user.id : '';
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const response = await axios.get(`http://localhost:5001/posts/${id}`);
-        console.log('Fetched post:', response.data);  // Log the fetched post
+        console.log('Fetched post:', response.data); // Log the fetched post
         setPost(response.data);
         setLoading(false);
       } catch (error) {
@@ -78,14 +83,10 @@ const PostDetails: React.FC = () => {
   };
 
   const handleAddComment = async () => {
-    const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found, please login first.');
       return;
     }
-
-    const decoded: { user: { id: string } } = jwtDecode(token);
-    const userId = decoded.user.id;
 
     try {
       await axios.post(
@@ -110,7 +111,6 @@ const PostDetails: React.FC = () => {
   };
 
   const handleLike = async (commentId: string) => {
-    const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found, please login first.');
       return;
@@ -126,16 +126,33 @@ const PostDetails: React.FC = () => {
           },
         }
       );
-      // Re-fetch post to update comments
-      const response = await axios.get(`http://localhost:5001/posts/${id}`);
-      setPost(response.data);
+      // Update the comment likes count locally
+      if (post) {
+        const updatedComments = post.comments.map(comment => {
+          if (comment._id === commentId) {
+            const isLiked = comment.likedBy.includes(userId);
+            const isDisliked = comment.dislikedBy.includes(userId);
+
+            if (isLiked) {
+              return { ...comment, likes: comment.likes - 1, likedBy: comment.likedBy.filter(id => id !== userId) };
+            } else {
+              if (isDisliked) {
+                return { ...comment, likes: comment.likes + 2, likedBy: [...comment.likedBy, userId], dislikedBy: comment.dislikedBy.filter(id => id !== userId) };
+              } else {
+                return { ...comment, likes: comment.likes + 1, likedBy: [...comment.likedBy, userId] };
+              }
+            }
+          }
+          return comment;
+        });
+        setPost({ ...post, comments: updatedComments });
+      }
     } catch (error) {
       console.error('Failed to like comment:', error);
     }
   };
 
   const handleUnlike = async (commentId: string) => {
-    const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found, please login first.');
       return;
@@ -151,9 +168,27 @@ const PostDetails: React.FC = () => {
           },
         }
       );
-      // Re-fetch post to update comments
-      const response = await axios.get(`http://localhost:5001/posts/${id}`);
-      setPost(response.data);
+      // Update the comment likes count locally
+      if (post) {
+        const updatedComments = post.comments.map(comment => {
+          if (comment._id === commentId) {
+            const isLiked = comment.likedBy.includes(userId);
+            const isDisliked = comment.dislikedBy.includes(userId);
+
+            if (isDisliked) {
+              return { ...comment, likes: comment.likes + 1, dislikedBy: comment.dislikedBy.filter(id => id !== userId) };
+            } else {
+              if (isLiked) {
+                return { ...comment, likes: comment.likes - 2, likedBy: comment.likedBy.filter(id => id !== userId), dislikedBy: [...comment.dislikedBy, userId] };
+              } else {
+                return { ...comment, likes: comment.likes - 1, dislikedBy: [...comment.dislikedBy, userId] };
+              }
+            }
+          }
+          return comment;
+        });
+        setPost({ ...post, comments: updatedComments });
+      }
     } catch (error) {
       console.error('Failed to unlike comment:', error);
     }
@@ -177,13 +212,7 @@ const PostDetails: React.FC = () => {
 
   return (
     <Box p={8} bg={bg} minHeight="100vh">
-      <Box
-        borderWidth="1px"
-        borderRadius="lg"
-        p={5}
-        boxShadow="md"
-        bg={boxBg}
-      >
+      <Box borderWidth="1px" borderRadius="lg" p={5} boxShadow="md" bg={boxBg}>
         <Heading mb={6} textAlign="center" color={textColor}>
           {post.heading}
         </Heading>
@@ -225,15 +254,8 @@ const PostDetails: React.FC = () => {
             Comments
           </Heading>
           <Stack spacing={5}>
-            {post.comments.map((comment) => (
-              <Box
-                key={comment._id}
-                p={4}
-                shadow="md"
-                borderWidth="1px"
-                borderRadius="md"
-                bg={boxBg}
-              >
+            {post.comments.map(comment => (
+              <Box key={comment._id} p={4} shadow="md" borderWidth="1px" borderRadius="md" bg={boxBg}>
                 <Text color={textColor}>{comment.text}</Text>
                 <Text mt={2} fontSize="sm" color="gray.500">
                   By {comment.author.username} on {new Date(comment.date).toLocaleDateString()}

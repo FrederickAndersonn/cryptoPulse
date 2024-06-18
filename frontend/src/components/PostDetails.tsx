@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
-import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
+import { jwtDecode } from 'jwt-decode';
+import { FaThumbsUp, FaThumbsDown, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import {
   Box,
   Heading,
@@ -42,6 +42,8 @@ interface Post {
   };
   date: string;
   comments: Comment[];
+  votes: number;
+  votedBy: { userId: string; vote: number }[];
 }
 
 const PostDetails: React.FC = () => {
@@ -49,6 +51,7 @@ const PostDetails: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState('');
+  const [votedPosts, setVotedPosts] = useState<{ [key: string]: number }>({});
   const bg = useColorModeValue('gray.50', 'gray.900');
   const boxBg = useColorModeValue('white', 'gray.700');
   const inputBg = useColorModeValue('white', 'gray.800');
@@ -67,6 +70,7 @@ const PostDetails: React.FC = () => {
         console.log('Fetched post:', response.data); // Log the fetched post
         setPost(response.data);
         setLoading(false);
+        loadVotesFromLocalStorage(response.data);
       } catch (error) {
         console.error('Error fetching post:', error);
         setLoading(false);
@@ -74,6 +78,18 @@ const PostDetails: React.FC = () => {
     };
     fetchPost();
   }, [id]);
+
+  // Load votes from local storage
+  const loadVotesFromLocalStorage = (post: Post) => {
+    const storedVotes = JSON.parse(localStorage.getItem('votedPosts') || '{}');
+    const initialVotedPosts = post._id in storedVotes ? { [post._id]: storedVotes[post._id] } : {};
+    setVotedPosts(initialVotedPosts);
+  };
+
+  // Save votes to local storage
+  const saveVotesToLocalStorage = (votedPosts: { [key: string]: number }) => {
+    localStorage.setItem('votedPosts', JSON.stringify(votedPosts));
+  };
 
   const handleDonate = () => {
     if (post && post.author.publicKey) {
@@ -198,6 +214,42 @@ const PostDetails: React.FC = () => {
     }
   };
 
+  const handleVote = async (vote: number) => {
+    if (!token) {
+      console.error('No token found, please login first.');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:5001/posts/${post?._id}/vote`,
+        { vote },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Update the post votes locally
+      const updatedPost = response.data;
+      setPost(updatedPost);
+
+      // Handle vote toggling and save to local storage
+      setVotedPosts((prevVotedPosts) => {
+        const currentVote = prevVotedPosts[post?._id || ''];
+        const newVote = currentVote === vote ? 0 : vote;
+        const updatedVotes = {
+          ...prevVotedPosts,
+          [post?._id || '']: newVote,
+        };
+        saveVotesToLocalStorage(updatedVotes);
+        return updatedVotes;
+      });
+    } catch (error) {
+      console.error('Failed to vote on post:', error);
+    }
+  };
+
   if (loading) {
     return (
       <Flex height="100vh" alignItems="center" justifyContent="center">
@@ -228,9 +280,36 @@ const PostDetails: React.FC = () => {
         <Text mt={4} fontSize="sm" color="gray.500">
           By {post.author.username} on {new Date(post.date).toLocaleDateString()}
         </Text>
-        <Button mt={4} colorScheme="teal" onClick={handleDonate}>
-          Donate
-        </Button>
+        <Flex mt={4} justifyContent="space-between" alignItems="center">
+          <Button colorScheme="teal" onClick={handleDonate}>
+            Donate
+          </Button>
+          <Flex>
+            <IconButton
+              aria-label="Upvote post"
+              icon={<FaArrowUp />}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleVote(1);
+              }}
+              size="sm"
+              mr={2}
+              bg={votedPosts[post._id] === 1 ? 'teal.500' : undefined}
+              _hover={{ bg: 'teal.400' }}
+            />
+            <IconButton
+              aria-label="Downvote post"
+              icon={<FaArrowDown />}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleVote(-1);
+              }}
+              size="sm"
+              bg={votedPosts[post._id] === -1 ? 'red.500' : undefined}
+              _hover={{ bg: 'red.400' }}
+            />
+          </Flex>
+        </Flex>
 
         <Box mt={6}>
           <Heading size="md" mb={4} color={textColor}>

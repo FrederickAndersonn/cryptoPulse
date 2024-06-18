@@ -21,7 +21,7 @@ const getUserIdFromToken = (req: Request): string | null => {
 // Get all posts
 router.get('/posts', async (req, res) => {
   try {
-    const posts = await Post.find().populate('author.id', 'name');
+    const posts = await Post.find().populate('author.id', 'name publicKey');
     res.json(posts);
   } catch (error) {
     console.error('Error fetching posts:', error);
@@ -77,6 +77,7 @@ router.post('/posts', async (req: Request, res: Response) => {
       author: {
         id: new Types.ObjectId(userId),
         username: user.name,
+        publicKey: user.publicKey, // Include publicKey here
       },
     });
 

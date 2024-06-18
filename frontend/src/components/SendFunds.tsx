@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Box,
   Button,
@@ -12,13 +13,20 @@ import {
 import axios from "axios";
 
 const SendFundsForm: React.FC = () => {
-  const [destinationID, setDestinationID] = useState("");
+  const location = useLocation();
+  const { destinationAddress } = location.state || { destinationAddress: "" };
+  const [destinationID, setDestinationID] = useState(destinationAddress);
   const [amount, setAmount] = useState("");
   const [memo, setMemo] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const { colorMode } = useColorMode(); // Access colorMode from useColorMode
-  const isDark = colorMode === "dark"; // Check if color mode is dark
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === "dark";
+
+  useEffect(() => {
+    console.log('Received destinationAddress:', destinationAddress);
+    setDestinationID(destinationAddress);
+  }, [destinationAddress]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +48,6 @@ const SendFundsForm: React.FC = () => {
         isClosable: true,
       });
 
-      // Clear form fields
       setDestinationID("");
       setAmount("");
       setMemo("");

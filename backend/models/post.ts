@@ -4,6 +4,7 @@ interface IPost extends Document {
   author: {
     id: Types.ObjectId;
     username: string;
+    publicKey: string;
   };
   heading: string;
   description: string;
@@ -18,7 +19,8 @@ const postSchema = new Schema<IPost>({
       ref: 'User',
       required: true
     },
-    username: { type: String, required: true }
+    username: { type: String, required: true },
+    publicKey: { type: String, required: true } // New attribute
   },
   heading: { type: String, required: true },
   description: { type: String, required: true },

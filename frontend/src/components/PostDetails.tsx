@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import {
@@ -33,6 +33,7 @@ interface Post {
   author: {
     id: string;
     username: string;
+    publicKey: string;  // Added publicKey here
   };
   date: string;
   comments: Comment[];
@@ -49,11 +50,13 @@ const PostDetails: React.FC = () => {
   const borderColor = useColorModeValue('gray.200', 'gray.600');
   const textColor = useColorModeValue('black', 'white');
   const formLabelColor = useColorModeValue('black', 'white');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const response = await axios.get(`http://localhost:5001/posts/${id}`);
+        console.log('Fetched post:', response.data);  // Log the fetched post
         setPost(response.data);
         setLoading(false);
       } catch (error) {
@@ -63,6 +66,13 @@ const PostDetails: React.FC = () => {
     };
     fetchPost();
   }, [id]);
+
+  const handleDonate = () => {
+    if (post && post.author.publicKey) {
+      console.log('Navigating to /sendfunds with destinationAddress:', post.author.publicKey);
+      navigate('/sendfunds', { state: { destinationAddress: post.author.publicKey } });
+    }
+  };
 
   const handleAddComment = async () => {
     const token = localStorage.getItem('token');
@@ -130,29 +140,32 @@ const PostDetails: React.FC = () => {
         <Text mt={4} fontSize="sm" color="gray.500">
           By {post.author.username} on {new Date(post.date).toLocaleDateString()}
         </Text>
+        <Button mt={4} colorScheme="teal" onClick={handleDonate}>
+          Donate
+        </Button>
 
         <Box mt={6}>
-            <Heading size="md" mb={4} color={textColor}>
-              Add a Comment
-            </Heading>
-            <FormControl>
-              <FormLabel color={formLabelColor}>Comment</FormLabel>
-              <Input
-                type="text"
-                placeholder="Enter your comment"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                bg={inputBg}
-                color={textColor}
-                borderColor={borderColor}
-              />
-            </FormControl>
-            <Flex justifyContent="flex-end">
-              <Button mt={4} colorScheme="blue" onClick={handleAddComment}>
-                Submit
-              </Button>
-            </Flex>
-          </Box>
+          <Heading size="md" mb={4} color={textColor}>
+            Add a Comment
+          </Heading>
+          <FormControl>
+            <FormLabel color={formLabelColor}>Comment</FormLabel>
+            <Input
+              type="text"
+              placeholder="Enter your comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              bg={inputBg}
+              color={textColor}
+              borderColor={borderColor}
+            />
+          </FormControl>
+          <Flex justifyContent="flex-end">
+            <Button mt={4} colorScheme="blue" onClick={handleAddComment}>
+              Submit
+            </Button>
+          </Flex>
+        </Box>
 
         <Box mt={10}>
           <Heading size="md" mb={4} color={textColor}>

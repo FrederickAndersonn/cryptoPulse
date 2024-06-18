@@ -10,7 +10,7 @@ import walletDetailsRoutes from './routes/walletDetailsRoutes';
 import postRoutes from './routes/postRoutes';
 import commentRoutes from './routes/commentRoutes';
 
-const mongourl = "mongodb+srv://public:public@cluster0.jcpik0t.mongodb.net/pukimai";
+const mongourl = "mongodb+srv://public:public@cluster0.jcpik0t.mongodb.net/cryptoPulse";
 
 mongoose.connect(mongourl, {
   useNewUrlParser: true,

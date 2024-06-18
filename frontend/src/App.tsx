@@ -4,11 +4,11 @@ import Navbar from './components/Navbar'; // Import the Navbar component
 import Login from './components/Login'; // Import the Login component
 import Signup from './components/Signup'; // Import the SignUp component
 import ShowGraph from './components/ShowGraph';
-
+import Forum from './components/Forum';
 import CoinsPage from './pages/CoinsPage';
 import theme from './theme/theme'; // Import the custom theme
 import WalletDetails from './components/WalletDetails';
-
+import Posts from './components/Posts';
 function App() {
   return (
     <ChakraProvider theme={theme}>
@@ -21,6 +21,8 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/coin/:id" element={<ShowGraph />} />
             <Route path="/walletdetails" element={<WalletDetails/>} />
+            <Route path="/create-post" element={<Posts/>} />
+            <Route path="/forum" element={<Forum />} />
           </Routes>
         </Box>
       </Router>

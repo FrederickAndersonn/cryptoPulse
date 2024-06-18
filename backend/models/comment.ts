@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
+import { Schema, model, Document, Types } from 'mongoose';
 
 interface IComment extends Document {
   author: {
@@ -12,33 +12,24 @@ interface IComment extends Document {
   };
 }
 
-const commentSchema: Schema<IComment> = new mongoose.Schema({
+const commentSchema = new Schema<IComment>({
   author: {
     id: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
       required: true
     },
-    username: {
-      type: String,
-      required: true
-    }
+    username: { type: String, required: true }
   },
-  text: {
-    type: String,
-    required: true
-  },
-  date: {
-    type: Date,
-    default: Date.now
-  },
+  text: { type: String, required: true },
+  date: { type: Date, default: Date.now },
   post: {
     id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'post',
+      type: Schema.Types.ObjectId,
+      ref: 'Post',
       required: true
     }
   }
 });
 
-export default mongoose.model<IComment>('Comment', commentSchema);
+export default model<IComment>('Comment', commentSchema);

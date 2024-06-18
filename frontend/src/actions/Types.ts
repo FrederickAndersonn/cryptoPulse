@@ -1,0 +1,15 @@
+export const SET_ALERT = 'SET_ALERT' as const;
+export const REMOVE_ALERT = 'REMOVE_ALERT' as const;
+export const REGISTER_SUCCESS = 'REGISTER_SUCCESS' as const;
+export const REGISTER_FAILURE = 'REGISTER_FAILURE' as const;
+export const USER_LOADED = 'USER_LOADED' as const;
+export const AUTH_ERROR = 'AUTH_ERROR' as const;
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS' as const;
+export const LOGIN_FAILURE = 'LOGIN_FAILURE' as const;
+export const LOGOUT = 'LOGOUT' as const;
+export const GETWATCHLIST = 'GETWATCHLIST' as const;
+export const WATCHLISTERROR = 'WATCHLISTERROR' as const;
+export const POSTCREATED = 'POSTCREATED' as const;
+export const GETMYPOST = 'GETMYPOST' as const;
+export const COMMENTCREATED = 'COMMENTCREATED' as const;
+export const GETMYCOMMENT = 'GETMYCOMMENT' as const;

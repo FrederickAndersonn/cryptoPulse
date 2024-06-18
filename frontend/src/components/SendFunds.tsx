@@ -5,6 +5,7 @@ import axios from 'axios';
 const SendFundsForm: React.FC = () => {
   const [destinationID, setDestinationID] = useState('');
   const [amount, setAmount] = useState('');
+  const [memo, setMemo] = useState(''); // State for memo string
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
@@ -16,7 +17,7 @@ const SendFundsForm: React.FC = () => {
       const token = localStorage.getItem('token'); // Assume the token is stored in localStorage
       const response = await axios.post(
         'http://localhost:5001/wallet/sendfunds',
-        { destinationID, amount },
+        { destinationID, amount, memo }, // Include memo in the data sent to backend
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -31,6 +32,7 @@ const SendFundsForm: React.FC = () => {
       // Clear form fields
       setDestinationID('');
       setAmount('');
+      setMemo('');
     } catch (error) {
       toast({
         title: 'Error',
@@ -64,6 +66,15 @@ const SendFundsForm: React.FC = () => {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             isRequired
+          />
+        </FormControl>
+
+        <FormControl id="memo" mb={4}>
+          <FormLabel>Memo</FormLabel>
+          <Input
+            type="text"
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
           />
         </FormControl>
 

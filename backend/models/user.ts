@@ -9,6 +9,7 @@ export interface UserDocument extends Document {
   initialBalance: number;
   comments: Types.ObjectId[];
   posts: Types.ObjectId[];
+  transactions: string[]; 
 }
 
 const UserSchema: Schema<UserDocument> = new mongoose.Schema({
@@ -50,6 +51,10 @@ const UserSchema: Schema<UserDocument> = new mongoose.Schema({
       ref: 'Post',
     },
   ],
+  transactions: {
+    type: [String], // Array of strings (transaction IDs)
+    default: [],   // Default value is an empty array
+  },
 });
 
 export default mongoose.model<UserDocument>('User', UserSchema);

@@ -42,13 +42,16 @@ const CreatePost: React.FC = () => {
         .catch(error => {
           console.error('Failed to fetch user details:', error);
         });
+    } else {
+      navigate('/login'); // Redirect to login if no token is found
     }
-  }, []);
+  }, [navigate]);
 
   const handleCreatePost = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found, please login first.');
+      navigate('/login'); // Redirect to login if no token is found
       return;
     }
 
@@ -85,6 +88,8 @@ const CreatePost: React.FC = () => {
         p="8"
         boxShadow="md"
         bg={isDark ? 'gray.700' : 'white'}
+        color={isDark ? 'white' : 'black'}
+        width="40%"
       >
         <Heading as="h2" mb="6" textAlign="center" color={isDark ? 'white' : 'black'}>
           Create Post
@@ -110,7 +115,7 @@ const CreatePost: React.FC = () => {
             size="lg"
             h="200px"
             fontSize="sm" // Adjusting font size to small
-            bg={isDark ? 'gray.800' : 'brand.100'}
+            bg={isDark ? 'gray.800' : 'white'}
             color={isDark ? 'white' : 'black'}
             borderColor={isDark ? 'gray.600' : 'gray.200'}
           />

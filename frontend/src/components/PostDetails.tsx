@@ -77,12 +77,16 @@ const PostDetails: React.FC = () => {
 
   const handleDonate = () => {
     if (post && post.author.publicKey) {
-      console.log('Navigating to /sendfunds with destinationAddress:', post.author.publicKey);
       navigate('/sendfunds', { state: { destinationAddress: post.author.publicKey } });
     }
   };
 
   const handleAddComment = async () => {
+    if (!comment.trim()) {
+      // Trim the comment to ensure no empty spaces are submitted
+      return;
+    }
+
     if (!token) {
       console.error('No token found, please login first.');
       return;
@@ -242,11 +246,13 @@ const PostDetails: React.FC = () => {
               borderColor={borderColor}
             />
           </FormControl>
-          <Flex justifyContent="flex-end">
-            <Button mt={4} colorScheme="blue" onClick={handleAddComment}>
-              Submit
-            </Button>
-          </Flex>
+          {comment.trim() && (  // Only show the button if there is non-empty input
+            <Flex justifyContent="flex-end">
+              <Button mt={4} colorScheme="blue" onClick={handleAddComment}>
+                Submit
+              </Button>
+            </Flex>
+          )}
         </Box>
 
         <Box mt={10}>

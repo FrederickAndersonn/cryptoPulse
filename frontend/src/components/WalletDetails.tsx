@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for programmatic navigation
+import { useNavigate } from 'react-router-dom';
 import {
   Flex,
   Box,
@@ -45,7 +45,12 @@ const WalletDetails: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('token') || ''; // Assuming token is stored in localStorage
+        const token = localStorage.getItem('token') || '';
+        if (!token) {
+          navigate('/login'); // Redirect to login if token is not present
+          return;
+        }
+
         const walletDetails = await fetchWalletDetails(token);
         const transactions = await fetchTransactions(token);
 

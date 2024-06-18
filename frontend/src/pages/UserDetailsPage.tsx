@@ -14,7 +14,6 @@ import {
   useColorModeValue,
   Flex,
   Spacer,
-  Stack,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -38,6 +37,7 @@ const UserDetails: React.FC = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [passwordUpdateMessage, setPasswordUpdateMessage] = useState('');
   const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [currentPostIndex, setCurrentPostIndex] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
 
@@ -89,6 +89,10 @@ const UserDetails: React.FC = () => {
       });
       // Remove the deleted post from the local state
       setUserPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+      // Adjust currentPostIndex if necessary
+      if (currentPostIndex >= userPosts.length - 1 && currentPostIndex > 0) {
+        setCurrentPostIndex(currentPostIndex - 1);
+      }
     } catch (error) {
       console.error('Error deleting post:', error);
     }
@@ -106,6 +110,18 @@ const UserDetails: React.FC = () => {
       setPasswordUpdateMessage(response.msg);
     } else {
       setPasswordUpdateMessage('Password update failed.');
+    }
+  };
+
+  const handleNextPost = () => {
+    if (currentPostIndex < userPosts.length - 1) {
+      setCurrentPostIndex(currentPostIndex + 1);
+    }
+  };
+
+  const handlePrevPost = () => {
+    if (currentPostIndex > 0) {
+      setCurrentPostIndex(currentPostIndex - 1);
     }
   };
 
@@ -134,36 +150,42 @@ const UserDetails: React.FC = () => {
             <strong>Public Key:</strong> {userProfile.publicKey}
           </Text>
           <Button mt={4} colorScheme="blue" onClick={() => navigate('/walletdetails')}>
-          Go to Wallet Details
-        </Button>
+            Go to Wallet Details
+          </Button>
+          <Button mt={4} colorScheme="teal" onClick={onOpen}>
+            Update Password
+          </Button>
         </Box>
         <Spacer height={8} />
-        <Button mt={4} colorScheme="teal" onClick={onOpen}>
-          Update Password
-        </Button>
       </Flex>
 
       <Spacer height={8} />
       <Heading as="h2" size="lg" mt={6} mb={4} textAlign="center" color={textColor}>
         Your Posts
       </Heading>
-      <Box bg={boxBg} p={4} borderRadius="md" boxShadow="md" width="100%">
-        <Stack spacing={4}>
-          {userPosts.map((post) => (
-            <Box key={post._id} p={4} shadow="md" borderWidth="1px" borderRadius="md" bg={boxBg}>
-              <Heading fontSize="lg" color={textColor}>
-                {post.heading}
-              </Heading>
-              <Text mt={4} color={textColor}>
-                {truncateDescription(post.description)}
-              </Text>
-              <Button mt={4} colorScheme="red" onClick={() => handleDeletePost(post._id)}>
-                Delete Post
-              </Button>
-            </Box>
-          ))}
-        </Stack>
-      </Box>
+      {userPosts.length > 0 && (
+        <Box bg={boxBg} p={4} borderRadius="md" boxShadow="md" width="100%">
+          <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" bg={boxBg}>
+            <Heading fontSize="lg" color={textColor}>
+              {userPosts[currentPostIndex].heading}
+            </Heading>
+            <Text mt={4} color={textColor}>
+              {truncateDescription(userPosts[currentPostIndex].description)}
+            </Text>
+            <Button mt={4} colorScheme="red" onClick={() => handleDeletePost(userPosts[currentPostIndex]._id)}>
+              Delete Post
+            </Button>
+          </Box>
+          <Flex mt={4} justifyContent="space-between">
+            <Button onClick={handlePrevPost} isDisabled={currentPostIndex === 0}>
+              Previous
+            </Button>
+            <Button onClick={handleNextPost} isDisabled={currentPostIndex === userPosts.length - 1}>
+              Next
+            </Button>
+          </Flex>
+        </Box>
+      )}
 
       {/* Password Update Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>

@@ -69,7 +69,7 @@ const CreatePost: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      navigate('/posts'); // Redirect to posts list after successful creation
+      navigate('/forum'); 
     } catch (error) {
       console.error('Failed to create post:', error);
     }

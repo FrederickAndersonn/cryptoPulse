@@ -246,7 +246,7 @@ const PostDetails: React.FC = () => {
               borderColor={borderColor}
             />
           </FormControl>
-          {comment.trim() && (  // Only show the button if there is non-empty input
+          {comment.trim() && (
             <Flex justifyContent="flex-end">
               <Button mt={4} colorScheme="blue" onClick={handleAddComment}>
                 Submit
@@ -274,12 +274,14 @@ const PostDetails: React.FC = () => {
                       onClick={() => handleLike(comment._id)}
                       size="sm"
                       mr={2}
+                      colorScheme={comment.likedBy.includes(userId) ? 'green' : undefined}
                     />
                     <IconButton
                       aria-label="Unlike comment"
                       icon={<FaThumbsDown />}
                       onClick={() => handleUnlike(comment._id)}
                       size="sm"
+                      colorScheme={comment.dislikedBy.includes(userId) ? 'red' : undefined}
                     />
                   </Flex>
                   <Text color={textColor}>{comment.likes} Likes</Text>

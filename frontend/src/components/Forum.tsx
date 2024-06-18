@@ -10,7 +10,7 @@ import {
   Spinner,
   Input,
   useColorModeValue,
-  Button
+  Button,
 } from '@chakra-ui/react';
 
 interface Post {
@@ -29,6 +29,7 @@ const Forum: React.FC = () => {
   const [searchWord, setSearchWord] = React.useState<string>('');
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState<number>(1);
+  const postsPerPage = 10;
   const navigate = useNavigate();
   const bg = useColorModeValue('gray.50', 'gray.900');
   const boxBg = useColorModeValue('white', 'gray.700');
@@ -47,14 +48,21 @@ const Forum: React.FC = () => {
       }
     };
     fetchPosts();
-  }, [page]);
+  }, []);
 
   const filterPosts = posts.filter((post) =>
     post.heading.toLowerCase().includes(searchWord.toLowerCase())
   );
 
+  const displayedPosts = filterPosts.slice(
+    (page - 1) * postsPerPage,
+    page * postsPerPage
+  );
+
   const handleNextPage = () => {
-    setPage((prevPage) => prevPage + 1);
+    if (page * postsPerPage < filterPosts.length) {
+      setPage((prevPage) => prevPage + 1);
+    }
   };
 
   const handlePreviousPage = () => {
@@ -99,7 +107,7 @@ const Forum: React.FC = () => {
         />
       </Box>
       <Stack spacing={4}>
-        {filterPosts.map((post) => (
+        {displayedPosts.map((post) => (
           <Box
             key={post._id}
             p={5}
@@ -128,7 +136,12 @@ const Forum: React.FC = () => {
           Previous
         </Button>
         <Text color={textColor}>Page {page}</Text>
-        <Button onClick={handleNextPage}>Next</Button>
+        <Button
+          onClick={handleNextPage}
+          disabled={page * postsPerPage >= filterPosts.length}
+        >
+          Next
+        </Button>
       </Flex>
     </Box>
   );

@@ -1,44 +1,121 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for programmatic navigation
+import {
+  Flex,
+  Box,
+  Text,
+  Heading,
+  List,
+  ListItem,
+  VStack,
+  Divider,
+  useColorMode,
+  Button,
+} from '@chakra-ui/react';
+import { fetchWalletDetails, fetchTransactions } from '../actions/wallet'; // Adjust the path as per your project structure
 
-const WalletDetails = () => {
-  const [walletInfo, setWalletInfo] = useState({
+interface Transaction {
+  id: string;
+  memo: string;
+  fee_charged: string;
+  created_at: string;
+}
+
+interface WalletInfo {
+  balance: string;
+  publicKey: string;
+  address: string;
+  transactions: Transaction[];
+}
+
+const WalletDetails: React.FC = () => {
+  const [walletInfo, setWalletInfo] = useState<WalletInfo>({
     balance: 'Loading...',
     publicKey: '',
-    address: ''
+    address: '',
+    transactions: [],
   });
 
-  useEffect(() => {
-    const fetchWalletDetails = async () => {
-      try {
-        const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        };
-        const res = await axios.get('http://localhost:5001/wallet/details', config); // Adjust URL
-        setWalletInfo(res.data);
-        console.log('Wallet details:', res.data);
-      } catch (err : any) {
-        console.error('Error fetching wallet details:', err.response.data);
+  const { colorMode, toggleColorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
 
+  const navigate = useNavigate(); // Use useNavigate instead of useHistory
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('token') || ''; // Assuming token is stored in localStorage
+        const walletDetails = await fetchWalletDetails(token);
+        const transactions = await fetchTransactions(token);
+
+        setWalletInfo({
+          balance: walletDetails.balance || '',
+          publicKey: walletDetails.publicKey || '',
+          address: walletDetails.address || '',
+          transactions,
+        });
+      } catch (error : any) {
+        console.error('Error fetching wallet details or transactions:', error.message);
       }
     };
 
-    fetchWalletDetails();
+    fetchData();
   }, []);
 
+  const handleTransfer = () => {
+    navigate('/sendfunds'); // Redirect to /sendfunds route using navigate
+  };
+
   return (
-    <div>
-      <h2>Wallet Details</h2>
-      <div>
-        <strong>Balance:</strong> {walletInfo.balance}
-      </div>
-      <div>
-        <strong>Address:</strong> {walletInfo.address}
-      </div>
-    </div>
+    <Flex height="100vh" p={4} bg={isDark ? 'gray.900' : 'gray.50'} direction="column">
+      <Flex align="center" justify="space-between">
+        <Heading size="lg" color={isDark ? 'white' : 'black'}>
+          Wallet Details
+        </Heading>
+      </Flex>
+
+      <Box mt={4} p={4} borderWidth="1px" borderRadius="lg" boxShadow="md" bg={isDark ? 'gray.700' : 'white'} color={isDark ? 'white' : 'black'} textAlign="center">
+        <Text fontSize="sm">Total Balance</Text>
+        <Text fontSize="3xl" fontWeight="bold" mt={1}>
+          {walletInfo.balance}
+        </Text>
+        <Text mt={2}>
+          <strong>Address:</strong> {walletInfo.address}
+        </Text>
+        <Button mt={4} colorScheme="teal" onClick={handleTransfer}>
+          Transfer
+        </Button>
+      </Box>
+
+      <Box mt={4} p={4} borderWidth="1px" borderRadius="lg" boxShadow="md" bg={isDark ? 'gray.700' : 'white'} color={isDark ? 'white' : 'black'}>
+        <Heading size="md" mb={2} color={isDark ? 'white' : 'black'}>
+          Transactions
+        </Heading>
+        <Divider mb={2} />
+        
+        <List spacing={3}>
+          {walletInfo.transactions.map((transaction) => (
+            <ListItem key={transaction.id} mb={3} p={3} bg={isDark ? 'gray.600' : 'gray.100'} borderRadius="md">
+              <VStack align="start">
+                <Text>
+                  <strong>ID:</strong> {transaction.id}
+                </Text>
+                <Text>
+                  <strong>Memo:</strong> {transaction.memo}
+                </Text>
+                <Text>
+                  <strong>Fee Charged:</strong> {transaction.fee_charged}
+                </Text>
+                <Text>
+                  <strong>Created At:</strong> {transaction.created_at}
+                </Text>
+              </VStack>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    </Flex>
   );
 };
 

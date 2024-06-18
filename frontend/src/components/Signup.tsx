@@ -10,6 +10,8 @@ import {
   Text,
   Link as ChakraLink,
   useColorMode,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react';
 import { signup } from '../actions/auth';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
@@ -18,18 +20,35 @@ const Signup: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState<string | null>(null); // State for password error
+  const [error, setError] = useState<string | null>(null); // State for signup error
   const navigate = useNavigate();
   const { colorMode, toggleColorMode } = useColorMode();
   const isDark = colorMode === 'dark';
 
   const handleSignup = async () => {
+    if (password.length < 5) {
+      setPasswordError('Password must be at least 5 characters long.');
+      return;
+    }
+
     try {
       const response = await signup(name, email, password);
-      const data = response ? response : { token: '' };
-      localStorage.setItem('token', data.token);
-      navigate('/coins'); // Redirect to dashboard after successful signup
+      if (response) {
+        navigate('/login'); // Redirect to login page after successful signup
+      } else {
+        setError('Signup failed. Please check your details and try again.');
+      }
     } catch (error) {
       console.error('Signup failed:', error);
+      setError('Signup failed. Please try again later.');
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (e.target.value.length >= 5) {
+      setPasswordError(null); 
     }
   };
 
@@ -47,6 +66,12 @@ const Signup: React.FC = () => {
         <Heading as="h2" mb="6" textAlign="center" color={isDark ? 'white' : 'black'}>
           Sign Up
         </Heading>
+        {error && (
+          <Alert status="error" mb="4">
+            <AlertIcon />
+            {error}
+          </Alert>
+        )}
         <FormControl>
           <FormLabel color={isDark ? 'white' : 'black'}>Name</FormLabel>
           <Input
@@ -77,17 +102,24 @@ const Signup: React.FC = () => {
             type="password"
             placeholder="Enter your password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handlePasswordChange}
             bg={isDark ? 'gray.800' : 'white'}
             color={isDark ? 'white' : 'black'}
             borderColor={isDark ? 'gray.600' : 'gray.200'}
+            isInvalid={passwordError !== null} // Highlight input if password is invalid
           />
+          {passwordError && (
+            <Text mt="2" fontSize="sm" color="red.500">
+              {passwordError}
+            </Text>
+          )}
         </FormControl>
         <Button
           mt="6"
           colorScheme="blue"
           width="full"
           onClick={handleSignup}
+          disabled={password.length < 5} // Disable button until password meets requirements
         >
           Sign Up
         </Button>

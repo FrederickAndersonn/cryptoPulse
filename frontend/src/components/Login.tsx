@@ -12,23 +12,34 @@ import {
   Text,
   Link as ChakraLink,
   useColorMode,
+  useToast,
 } from '@chakra-ui/react';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { colorMode, toggleColorMode } = useColorMode();
+  const toast = useToast();
+  const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
 
   const handleLogin = async () => {
     try {
       const response = await login(email, password);
-      const data = response ? response : { token: '' };
-      localStorage.setItem('token', data.token);
+      if (!response || !response.token) {
+        throw new Error('Invalid credentials'); // Throw error if login failed
+      }
+      localStorage.setItem('token', response.token);
       navigate('/coins'); // Redirect to dashboard after successful login
-    } catch (error) {
-      console.error('Login failed:', error);
+    } catch (error : any) {
+      console.error('Login failed:', error.message);
+      toast({
+        title: 'Login Failed',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
@@ -65,7 +76,7 @@ const Login: React.FC = () => {
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            bg={isDark ? 'gray.800' : 'brand.100'}
+            bg={isDark ? 'gray.800' : 'white'}
             color={isDark ? 'white' : 'black'}
             borderColor={isDark ? 'gray.600' : 'gray.200'}
           />

@@ -3,12 +3,13 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import cors from 'cors';
 import mongoose from 'mongoose';
-
+import userDetailsRoutes from './routes/userDetailsRoutes';
 import userRoutes from './routes/userRoutes';
 import loginRoutes from './routes/loginRoutes';
 import walletDetailsRoutes from './routes/walletDetailsRoutes';
 import postRoutes from './routes/postRoutes';
 import commentRoutes from './routes/commentRoutes';
+
 const mongourl = "mongodb+srv://public:public@cluster0.jcpik0t.mongodb.net/pukimai";
 
 mongoose.connect(mongourl, {
@@ -30,6 +31,7 @@ app.use("/login", loginRoutes);
 app.use("/wallet", walletDetailsRoutes);
 app.use("/", postRoutes);
 app.use("/comment",commentRoutes);
+app.use("/user", userDetailsRoutes);
 
 
 const PORT = process.env.PORT || 5001;

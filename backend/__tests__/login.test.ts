@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 jest.mock('../models/user');
 jest.mock('bcryptjs');
 jest.mock('jsonwebtoken');
+const jwtSecret = "my secret token";
 
 afterAll(async () => {
   server.close(); // Close the server after all tests
@@ -47,7 +48,7 @@ describe('POST /login', () => {
     expect(bcrypt.compare).toHaveBeenCalledWith('password123', 'mockHashedPassword');
     expect(jwt.sign).toHaveBeenCalledWith(
       { user: { id: 'mockUserId' } },
-      'my secret token',
+      jwtSecret,
       { expiresIn: 360000 },
       expect.any(Function)
     );

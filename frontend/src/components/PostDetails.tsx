@@ -8,7 +8,7 @@ import {
   Text,
   Flex,
   Stack,
-  useColorMode,
+  useColorModeValue,
   Spinner,
   FormControl,
   FormLabel,
@@ -43,8 +43,12 @@ const PostDetails: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState('');
-  const { colorMode } = useColorMode();
-  const isDark = colorMode === 'dark';
+  const bg = useColorModeValue('gray.50', 'gray.900');
+  const boxBg = useColorModeValue('white', 'gray.700');
+  const inputBg = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.600');
+  const textColor = useColorModeValue('black', 'white');
+  const formLabelColor = useColorModeValue('black', 'white');
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -109,24 +113,26 @@ const PostDetails: React.FC = () => {
   }
 
   return (
-    <Box p={5}>
+    <Box p={8} bg={bg} minHeight="100vh">
       <Box
         borderWidth="1px"
         borderRadius="lg"
         p={5}
         boxShadow="md"
-        bg={isDark ? 'gray.700' : 'white'}
+        bg={boxBg}
       >
-        <Heading mb={6} textAlign="center" color={isDark ? 'white' : 'black'}>
+        <Heading mb={6} textAlign="center" color={textColor}>
           {post.heading}
         </Heading>
-        <Text mt={4}>{post.description}</Text>
+        <Text mt={4} color={textColor}>
+          {post.description}
+        </Text>
         <Text mt={4} fontSize="sm" color="gray.500">
           By {post.author.username} on {new Date(post.date).toLocaleDateString()}
         </Text>
 
         <Box mt={10}>
-          <Heading size="md" mb={4} color={isDark ? 'white' : 'black'}>
+          <Heading size="md" mb={4} color={textColor}>
             Comments
           </Heading>
           <Stack spacing={5}>
@@ -137,9 +143,9 @@ const PostDetails: React.FC = () => {
                 shadow="md"
                 borderWidth="1px"
                 borderRadius="md"
-                bg={isDark ? 'gray.700' : 'white'}
+                bg={boxBg}
               >
-                <Text>{comment.text}</Text>
+                <Text color={textColor}>{comment.text}</Text>
                 <Text mt={2} fontSize="sm" color="gray.500">
                   By {comment.author.username} on {new Date(comment.date).toLocaleDateString()}
                 </Text>
@@ -148,19 +154,19 @@ const PostDetails: React.FC = () => {
           </Stack>
 
           <Box mt={6}>
-            <Heading size="md" mb={4} color={isDark ? 'white' : 'black'}>
+            <Heading size="md" mb={4} color={textColor}>
               Add a Comment
             </Heading>
             <FormControl>
-              <FormLabel color={isDark ? 'white' : 'black'}>Comment</FormLabel>
+              <FormLabel color={formLabelColor}>Comment</FormLabel>
               <Input
                 type="text"
                 placeholder="Enter your comment"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                bg={isDark ? 'gray.800' : 'white'}
-                color={isDark ? 'white' : 'black'}
-                borderColor={isDark ? 'gray.600' : 'gray.200'}
+                bg={inputBg}
+                color={textColor}
+                borderColor={borderColor}
               />
             </FormControl>
             <Button mt={4} colorScheme="blue" onClick={handleAddComment}>

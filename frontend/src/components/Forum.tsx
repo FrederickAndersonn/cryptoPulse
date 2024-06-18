@@ -84,7 +84,7 @@ const Forum: React.FC = () => {
   }
 
   return (
-    <Box width="100%" p={4} bg={bg} minHeight="100vh">
+    <Box width="100%" p={8} bg={bg} minHeight="100vh">
       <Heading as="h1" mb={4} textAlign="center" color={textColor}>
         Forum
       </Heading>

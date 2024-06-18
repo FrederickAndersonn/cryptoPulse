@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FaAddressCard, FaDollarSign, FaStickyNote } from "react-icons/fa";
 import {
   Box,
@@ -17,6 +17,7 @@ import axios from "axios";
 
 const SendFundsForm: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { destinationAddress } = location.state || { destinationAddress: "" };
   const [destinationID, setDestinationID] = useState(destinationAddress);
   const [amount, setAmount] = useState("");
@@ -37,6 +38,11 @@ const SendFundsForm: React.FC = () => {
 
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
       const response = await axios.post(
         "http://localhost:5001/wallet/sendfunds",
         { destinationID, amount, memo },
@@ -66,6 +72,14 @@ const SendFundsForm: React.FC = () => {
       setLoading(false);
     }
   };
+
+  // Check if logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   return (
     <Flex

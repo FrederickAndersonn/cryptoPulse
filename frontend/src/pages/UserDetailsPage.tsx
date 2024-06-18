@@ -59,11 +59,14 @@ const UserDetails: React.FC = () => {
       if (profile) {
         setUserProfile(profile);
         fetchUserPosts(profile._id); // Fetch user posts
+      } else {
+        // If user profile fetch fails, navigate to login
+        navigate('/login');
       }
     };
 
     fetchProfile();
-  }, []);
+  }, [navigate]);
 
   const fetchUserPosts = async (userId: string) => {
     try {

@@ -15,6 +15,14 @@ import {
   Flex,
   Spacer,
   Stack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from '@chakra-ui/react';
 
 interface Post {
@@ -30,6 +38,7 @@ const UserDetails: React.FC = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [passwordUpdateMessage, setPasswordUpdateMessage] = useState('');
   const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
 
   const bg = useColorModeValue('gray.50', 'gray.800');
@@ -67,7 +76,7 @@ const UserDetails: React.FC = () => {
     try {
       await axios.delete(`http://localhost:5001/posts/${postId}`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       // Remove the deleted post from the local state
@@ -93,7 +102,11 @@ const UserDetails: React.FC = () => {
   };
 
   if (!userProfile) {
-    return <Box p={4} bg={bg} minHeight="100vh">Loading...</Box>;
+    return (
+      <Box p={4} bg={bg} minHeight="100vh">
+        Loading...
+      </Box>
+    );
   }
 
   return (
@@ -114,54 +127,9 @@ const UserDetails: React.FC = () => {
           </Text>
         </Box>
         <Spacer height={8} />
-        <Heading as="h2" size="lg" mt={6} mb={4} textAlign="center" color={textColor}>
+        <Button mt={4} colorScheme="teal" onClick={onOpen}>
           Update Password
-        </Heading>
-        <Box bg={boxBg} p={4} borderRadius="md" boxShadow="md" width="100%">
-          <form onSubmit={handlePasswordUpdate}>
-            <FormControl mb={4}>
-              <FormLabel color={textColor}>Current Password</FormLabel>
-              <Input
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                required
-                bg={bg}
-                color={textColor}
-              />
-            </FormControl>
-            <FormControl mb={4}>
-              <FormLabel color={textColor}>New Password</FormLabel>
-              <Input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                bg={bg}
-                color={textColor}
-              />
-            </FormControl>
-            <FormControl mb={4}>
-              <FormLabel color={textColor}>Confirm New Password</FormLabel>
-              <Input
-                type="password"
-                value={confirmNewPassword}
-                onChange={(e) => setConfirmNewPassword(e.target.value)}
-                required
-                bg={bg}
-                color={textColor}
-              />
-            </FormControl>
-            <Button type="submit" colorScheme="teal" width="full">
-              Update Password
-            </Button>
-          </form>
-          {passwordUpdateMessage && (
-            <Text mt={4} color={textColor}>
-              {passwordUpdateMessage}
-            </Text>
-          )}
-        </Box>
+        </Button>
         <Button mt={4} colorScheme="blue" onClick={() => navigate('/walletdetails')}>
           Go to Wallet Details
         </Button>
@@ -188,6 +156,59 @@ const UserDetails: React.FC = () => {
           ))}
         </Stack>
       </Box>
+
+      {/* Password Update Modal */}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Update Password</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form onSubmit={handlePasswordUpdate}>
+              <FormControl mb={4}>
+                <FormLabel>Current Password</FormLabel>
+                <Input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  required
+                />
+              </FormControl>
+              <FormControl mb={4}>
+                <FormLabel>New Password</FormLabel>
+                <Input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                />
+              </FormControl>
+              <FormControl mb={4}>
+                <FormLabel>Confirm New Password</FormLabel>
+                <Input
+                  type="password"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  required
+                />
+              </FormControl>
+              <Button type="submit" colorScheme="teal" width="full">
+                Update Password
+              </Button>
+            </form>
+            {passwordUpdateMessage && (
+              <Text mt={4}>
+                {passwordUpdateMessage}
+              </Text>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

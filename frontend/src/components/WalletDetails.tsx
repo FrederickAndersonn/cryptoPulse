@@ -101,7 +101,7 @@ const WalletDetails: React.FC = () => {
         
         <List spacing={3}>
           {walletInfo.transactions.map((transaction) => (
-            <ListItem key={transaction.id}>
+            <ListItem key={transaction.id} mb={3} p={3} bg={isDark ? 'gray.600' : 'gray.100'} borderRadius="md">
               <VStack align="start">
                 <Text>
                   <strong>ID:</strong> {transaction.id}

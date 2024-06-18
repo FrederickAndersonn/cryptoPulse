@@ -214,6 +214,8 @@ const PostDetails: React.FC = () => {
     );
   }
 
+  post.comments.sort((a, b) => b.likes - a.likes);
+
   return (
     <Box p={8} bg={bg} minHeight="100vh">
       <Box borderWidth="1px" borderRadius="lg" p={5} boxShadow="md" bg={boxBg}>

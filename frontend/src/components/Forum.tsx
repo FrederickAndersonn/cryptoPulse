@@ -19,7 +19,7 @@ interface Post {
   description: string;
   author: {
     id: string;
-    name: string;
+    username: string;
   };
   date: string;
 }
@@ -118,7 +118,7 @@ const Forum: React.FC = () => {
               {truncateDescription(post.description)}
             </Text>
             <Text mt={4} fontSize="sm" color="gray.500">
-              By {post.author.name} on {new Date(post.date).toLocaleDateString()}
+              By {post.author.username} on {new Date(post.date).toLocaleDateString()}
             </Text>
           </Box>
         ))}

@@ -22,6 +22,7 @@ const Signup: React.FC = () => {
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState<string | null>(null); // State for password error
   const [error, setError] = useState<string | null>(null); // State for signup error
+  const [isLoading, setIsLoading] = useState(false); // Loading state for signup process
   const navigate = useNavigate();
   const { colorMode, toggleColorMode } = useColorMode();
   const isDark = colorMode === 'dark';
@@ -31,6 +32,7 @@ const Signup: React.FC = () => {
       setPasswordError('Password must be at least 5 characters long.');
       return;
     }
+    setIsLoading(true); // Start loading
 
     try {
       const response = await signup(name, email, password);
@@ -42,13 +44,15 @@ const Signup: React.FC = () => {
     } catch (error) {
       console.error('Signup failed:', error);
       setError('Signup failed. Please try again later.');
+    } finally {
+      setIsLoading(false); // Stop loading, whether success or failure
     }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     if (e.target.value.length >= 5) {
-      setPasswordError(null); 
+      setPasswordError(null);
     }
   };
 
@@ -119,7 +123,9 @@ const Signup: React.FC = () => {
           colorScheme="blue"
           width="full"
           onClick={handleSignup}
-          disabled={password.length < 5} // Disable button until password meets requirements
+          isLoading={isLoading} // Display loading state
+          loadingText="Signing up..."
+          disabled={isLoading || password.length < 5} // Disable button while loading or if password is invalid
         >
           Sign Up
         </Button>

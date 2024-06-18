@@ -18,28 +18,24 @@ import {
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Loading state for login button
   const navigate = useNavigate();
   const toast = useToast();
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
 
-  useEffect(() => {
-    // Check if token is present in localStorage
-    const token = localStorage.getItem('token');
-    if (token) {
-      navigate('/coins'); // Redirect to dashboard if user is already logged in
-    }
-  }, [navigate]);
-
   const handleLogin = async () => {
+    setIsLoading(true); // Start loading
+  
     try {
       const response = await login(email, password);
       if (!response || !response.token) {
         throw new Error('Invalid credentials'); // Throw error if login failed
       }
-      // Perform page refresh
-      window.location.reload();
-    } catch (error : any) {
+      
+      navigate('/coins');
+      window.location.reload(); 
+    } catch (error:any) {
       console.error('Login failed:', error.message);
       toast({
         title: 'Login Failed',
@@ -48,8 +44,11 @@ const Login: React.FC = () => {
         duration: 5000,
         isClosable: true,
       });
+    } finally {
+      setIsLoading(false); // Stop loading, whether success or failure
     }
   };
+  
 
   return (
     <Flex height="100vh" alignItems="center" justifyContent="center" bg={isDark ? 'gray.900' : 'gray.50'}>
@@ -94,6 +93,9 @@ const Login: React.FC = () => {
           colorScheme="blue"
           width="full"
           onClick={handleLogin}
+          isLoading={isLoading} // Display loading state
+          loadingText="Logging in..."
+          disabled={isLoading} // Disable button while loading
         >
           Login
         </Button>

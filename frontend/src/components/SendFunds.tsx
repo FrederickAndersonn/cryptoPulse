@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { FaAddressCard, FaDollarSign, FaStickyNote } from "react-icons/fa";
 import {
   Box,
   Button,
@@ -9,6 +10,8 @@ import {
   useToast,
   useColorMode,
   Flex,
+  Heading,
+  Text,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -81,9 +84,15 @@ const SendFundsForm: React.FC = () => {
         color={isDark ? "white" : "black"}
         width="40%"
       >
+        <Heading as="h1" size="lg" mb={4} textAlign="center">
+          Send Funds
+        </Heading>
+        <Text mb={6} textAlign="center">
+          Enter the details below to send funds to another account.
+        </Text>
         <form onSubmit={handleSubmit}>
           <FormControl id="destinationID" mb={4}>
-            <FormLabel>Destination Address</FormLabel>
+            <FormLabel><FaAddressCard />Destination Address</FormLabel>
             <Input
               type="text"
               value={destinationID}
@@ -96,7 +105,7 @@ const SendFundsForm: React.FC = () => {
           </FormControl>
 
           <FormControl id="amount" mb={4}>
-            <FormLabel>Amount</FormLabel>
+            <FormLabel><FaDollarSign />Amount</FormLabel>
             <Input
               type="number"
               value={amount}
@@ -109,7 +118,7 @@ const SendFundsForm: React.FC = () => {
           </FormControl>
 
           <FormControl id="memo" mb={4}>
-            <FormLabel>Memo</FormLabel>
+            <FormLabel><FaStickyNote />Memo</FormLabel>
             <Input
               type="text"
               value={memo}

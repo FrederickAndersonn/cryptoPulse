@@ -41,7 +41,7 @@ const UserDetails: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
 
-  const bg = useColorModeValue('gray.50', 'gray.800');
+  const bg = useColorModeValue('gray.50', 'gray.900');
   const boxBg = useColorModeValue('white', 'gray.700'); // Light mode: white, Dark mode: gray.700
   const textColor = useColorModeValue('black', 'white'); // Light mode: black, Dark mode: white
 
@@ -149,7 +149,7 @@ const UserDetails: React.FC = () => {
           <Text fontSize="lg" color={textColor}>
             <strong>Public Key:</strong> {userProfile.publicKey}
           </Text>
-          <Button mt={4} colorScheme="blue" onClick={() => navigate('/walletdetails')}>
+          <Button mt={4} mr={4} colorScheme="blue" onClick={() => navigate('/walletdetails')}>
             Go to Wallet Details
           </Button>
           <Button mt={4} colorScheme="teal" onClick={onOpen}>

@@ -104,6 +104,7 @@ const Navbar: React.FC = () => {
               to="/coins"
               display="flex"
               alignItems="center"
+              mr={4}
               _hover={{
                 textDecoration: "none",
                 bg: "teal.600",
@@ -124,6 +125,7 @@ const Navbar: React.FC = () => {
               to="/create-post"
               display="flex"
               alignItems="center"
+              mr={4}
               _hover={{
                 textDecoration: "none",
                 bg: "teal.600",
@@ -144,6 +146,7 @@ const Navbar: React.FC = () => {
               to="/forum"
               display="flex"
               alignItems="center"
+              mr={4}
               _hover={{
                 textDecoration: "none",
                 bg: "teal.600",

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { login } from '../actions/auth';
 import {
@@ -23,14 +23,22 @@ const Login: React.FC = () => {
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
 
+  useEffect(() => {
+    // Check if token is present in localStorage
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/coins'); // Redirect to dashboard if user is already logged in
+    }
+  }, [navigate]);
+
   const handleLogin = async () => {
     try {
       const response = await login(email, password);
       if (!response || !response.token) {
         throw new Error('Invalid credentials'); // Throw error if login failed
       }
-      localStorage.setItem('token', response.token);
-      navigate('/coins'); // Redirect to dashboard after successful login
+      // Perform page refresh
+      window.location.reload();
     } catch (error : any) {
       console.error('Login failed:', error.message);
       toast({

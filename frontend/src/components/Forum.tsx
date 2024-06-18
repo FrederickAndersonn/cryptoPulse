@@ -43,6 +43,15 @@ const Forum: React.FC = () => {
     fetchPosts();
   }, []);
 
+  // Function to truncate description to maximum 30 words
+  const truncateDescription = (description: string): string => {
+    const words = description.split(' ');
+    if (words.length > 30) {
+      return words.slice(0, 30).join(' ') + ' ...';
+    }
+    return description;
+  };
+
   if (loading) {
     return (
       <Flex height="100vh" alignItems="center" justifyContent="center">
@@ -69,7 +78,9 @@ const Forum: React.FC = () => {
             cursor="pointer"
           >
             <Heading fontSize="xl">{post.heading}</Heading>
-            <Text mt={4}>{post.description}</Text>
+            <Text mt={4}>
+              {truncateDescription(post.description)}
+            </Text>
             <Text mt={4} fontSize="sm" color="gray.500">
               By {post.author.name} on {new Date(post.date).toLocaleDateString()}
             </Text>

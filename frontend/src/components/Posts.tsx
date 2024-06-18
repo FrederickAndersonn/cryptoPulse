@@ -78,8 +78,8 @@ const CreatePost: React.FC = () => {
   return (
     <Flex height="100vh" alignItems="center" justifyContent="center" bg={isDark ? 'gray.900' : 'gray.50'}>
       <Box
-        minW="sm"
-        maxW="xl"
+        minW="3xl"
+        maxW="4xl" // Adjust the maximum width of the box to be wider
         borderWidth="1px"
         borderRadius="lg"
         p="8"
@@ -107,6 +107,9 @@ const CreatePost: React.FC = () => {
             placeholder="Enter post description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            size="lg"
+            h="200px"
+            fontSize="sm" // Adjusting font size to small
             bg={isDark ? 'gray.800' : 'brand.100'}
             color={isDark ? 'white' : 'black'}
             borderColor={isDark ? 'gray.600' : 'gray.200'}

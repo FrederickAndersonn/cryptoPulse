@@ -137,8 +137,8 @@ const UserDetails: React.FC = () => {
   }
 
   return (
-    <Box width="100%" p={4} bg={bg} minHeight="100vh">
-      <Flex direction="column" align="center" maxW="40%" mx="auto">
+    <Box width="100%" py={10} px={24} bg={bg} minHeight="100vh">
+      <Flex direction="column" align="center" maxW="100%" mx="auto">
         <Heading as="h1" mb={4} textAlign="center" color={textColor}>
           User Details
         </Heading>

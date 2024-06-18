@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for programmatic navigation
 import {
   Flex,
   Box,
@@ -10,7 +11,9 @@ import {
   VStack,
   Divider,
   useColorMode,
+  Button,
 } from '@chakra-ui/react';
+import { fetchWalletDetails, fetchTransactions } from '../actions/wallet'; // Adjust the path as per your project structure
 
 interface Transaction {
   id: string;
@@ -37,60 +40,52 @@ const WalletDetails: React.FC = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const isDark = colorMode === 'dark';
 
+  const navigate = useNavigate(); // Use useNavigate instead of useHistory
+
   useEffect(() => {
-    const fetchWalletDetails = async () => {
+    const fetchData = async () => {
       try {
-        const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
+        const token = localStorage.getItem('token') || ''; // Assuming token is stored in localStorage
+        const walletDetails = await fetchWalletDetails(token);
+        const transactions = await fetchTransactions(token);
 
-        // Fetch wallet details
-        const walletDetailsRes = await axios.get<Partial<WalletInfo>>(
-          'http://localhost:5001/wallet/details',
-          config
-        );
-        setWalletInfo((prevState) => ({
-          ...prevState,
-          balance: walletDetailsRes.data.balance || '', // Ensure balance is not undefined
-          publicKey: walletDetailsRes.data.publicKey || '', // Ensure publicKey is not undefined
-          address: walletDetailsRes.data.address || '', // Ensure address is not undefined
-        }));
-
-        // Fetch transactions associated with the wallet
-        const transactionsRes = await axios.get<Transaction[]>(
-          'http://localhost:5001/wallet/transactions',
-          config
-        );
-        setWalletInfo((prevState) => ({
-          ...prevState,
-          transactions: transactionsRes.data,
-        }));
-      } catch (err : any) {
-        console.error('Error fetching wallet details or transactions:', err.response ? err.response.data : err.message);
+        setWalletInfo({
+          balance: walletDetails.balance || '',
+          publicKey: walletDetails.publicKey || '',
+          address: walletDetails.address || '',
+          transactions,
+        });
+      } catch (error : any) {
+        console.error('Error fetching wallet details or transactions:', error.message);
       }
     };
 
-    fetchWalletDetails();
+    fetchData();
   }, []);
 
+  const handleTransfer = () => {
+    navigate('/sendfunds'); // Redirect to /sendfunds route using navigate
+  };
+
   return (
-    <Flex direction="column" p={4} minHeight="100vh" bg={isDark ? 'gray.900' : 'gray.50'}>
+    <Flex height="100vh" p={4} bg={isDark ? 'gray.900' : 'gray.50'} direction="column">
       <Flex align="center" justify="space-between">
         <Heading size="lg" color={isDark ? 'white' : 'black'}>
           Wallet Details
         </Heading>
       </Flex>
 
-      <Box mt={4} p={4} borderWidth="1px" borderRadius="lg" boxShadow="md" bg={isDark ? 'gray.700' : 'white'} color={isDark ? 'white' : 'black'}>
-        <Text>
-          <strong>Balance:</strong> {walletInfo.balance}
+      <Box mt={4} p={4} borderWidth="1px" borderRadius="lg" boxShadow="md" bg={isDark ? 'gray.700' : 'white'} color={isDark ? 'white' : 'black'} textAlign="center">
+        <Text fontSize="sm">Total Balance</Text>
+        <Text fontSize="3xl" fontWeight="bold" mt={1}>
+          {walletInfo.balance}
         </Text>
         <Text mt={2}>
           <strong>Address:</strong> {walletInfo.address}
         </Text>
+        <Button mt={4} colorScheme="teal" onClick={handleTransfer}>
+          Transfer
+        </Button>
       </Box>
 
       <Box mt={4} p={4} borderWidth="1px" borderRadius="lg" boxShadow="md" bg={isDark ? 'gray.700' : 'white'} color={isDark ? 'white' : 'black'}>

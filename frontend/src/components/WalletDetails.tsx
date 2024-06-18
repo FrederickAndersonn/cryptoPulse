@@ -36,9 +36,6 @@ const WalletDetails = () => {
         <strong>Balance:</strong> {walletInfo.balance}
       </div>
       <div>
-        <strong>Public Key:</strong> {walletInfo.publicKey}
-      </div>
-      <div>
         <strong>Address:</strong> {walletInfo.address}
       </div>
     </div>

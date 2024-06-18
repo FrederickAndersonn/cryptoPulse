@@ -7,7 +7,6 @@ export interface UserDocument extends Document {
   email: string;
   password: string;
   publicKey: string;
-  secretKey: string;
   initialBalance: number;
 }
 
@@ -26,10 +25,6 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   publicKey: {
-    type: String,
-    required: false,
-  },
-  secretKey: {
     type: String,
     required: false,
   }

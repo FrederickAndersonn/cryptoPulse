@@ -45,6 +45,14 @@ const UserDetails: React.FC = () => {
   const boxBg = useColorModeValue('white', 'gray.700'); // Light mode: white, Dark mode: gray.700
   const textColor = useColorModeValue('black', 'white'); // Light mode: black, Dark mode: white
 
+  const truncateDescription = (description: string): string => {
+    const words = description.split(' ');
+    if (words.length > 30) {
+      return words.slice(0, 30).join(' ') + ' ...';
+    }
+    return description;
+  };
+
   useEffect(() => {
     const fetchProfile = async () => {
       const profile = await fetchUserProfile();
@@ -125,13 +133,13 @@ const UserDetails: React.FC = () => {
           <Text fontSize="lg" color={textColor}>
             <strong>Public Key:</strong> {userProfile.publicKey}
           </Text>
+          <Button mt={4} colorScheme="blue" onClick={() => navigate('/walletdetails')}>
+          Go to Wallet Details
+        </Button>
         </Box>
         <Spacer height={8} />
         <Button mt={4} colorScheme="teal" onClick={onOpen}>
           Update Password
-        </Button>
-        <Button mt={4} colorScheme="blue" onClick={() => navigate('/walletdetails')}>
-          Go to Wallet Details
         </Button>
       </Flex>
 
@@ -146,8 +154,8 @@ const UserDetails: React.FC = () => {
               <Heading fontSize="lg" color={textColor}>
                 {post.heading}
               </Heading>
-              <Text mt={2} color={textColor}>
-                {post.description}
+              <Text mt={4} color={textColor}>
+                {truncateDescription(post.description)}
               </Text>
               <Button mt={4} colorScheme="red" onClick={() => handleDeletePost(post._id)}>
                 Delete Post

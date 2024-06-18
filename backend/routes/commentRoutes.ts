@@ -28,21 +28,25 @@ router.post('/create', async (req: Request, res: Response) => {
   try {
     const user = await User.findById(userId).exec();
     if (!user) {
-      res.status(404).send('User not found');
-      return;
+      return res.status(404).send('User not found');
     }
     const post = await Post.findById(postId).exec();
     if (!post) {
-      res.status(404).send('Post not found');
-      return;
+      return res.status(404).send('Post not found');
     }
     const newComment = new Comment(req.body);
     newComment.author.id = new Types.ObjectId(userId);
     newComment.author.username = user.name;
     newComment.post.id = new Types.ObjectId(postId);
     await newComment.save();
+
+    // Update user's comments array
+    user.comments.push(newComment._id);
+    await user.save();
+
     post.comments.push(newComment._id); // Push the comment's _id instead of the comment itself
     await post.save();
+
     res.status(200).send("Comment created and linked to user and post");
   } catch (err) {
     console.log(err);

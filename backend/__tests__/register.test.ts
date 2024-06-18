@@ -1,31 +1,24 @@
 import request from 'supertest';
-import mongoose from 'mongoose';
 import { app, server } from '../server'; // Import the server to close it later
 import User from '../models/user';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 jest.mock('../models/user');
 jest.mock('bcryptjs');
 jest.mock('jsonwebtoken');
 
-beforeAll(async () => {
-  // Mock implementation of mongoose connection
-  await User.deleteMany();
-});
-
 afterAll(async () => {
-    // Clean up any remaining mock states
-    await mongoose.connection.close(); // Ensure mongoose connection is closed
-    server.close(() => {
-      console.log('Server closed');
-    });
-    jest.restoreAllMocks();
+  jest.restoreAllMocks();
+  await mongoose.connection.close();
+  server.close(() => {
+    console.log('Server closed');
+  });
 });
 
 afterEach(async () => {
   jest.clearAllMocks();
-  await User.deleteMany();
 });
 
 describe('POST /register', () => {
@@ -35,15 +28,22 @@ describe('POST /register', () => {
       _id: mockUserId,
       id: mockUserId.toString()
     });
+    
+    // Mock User model to return a new user instance with a save method
     (User as any).mockImplementationOnce(() => ({
       save: mockUserSave,
       _id: mockUserId,
       id: mockUserId.toString()
     }));
 
+    // Mock User.findOne to return null (indicating that the user does not already exist)
     (User.findOne as jest.Mock).mockResolvedValueOnce(null);
+    
+    // Mock bcrypt functions
     (bcrypt.genSalt as jest.Mock).mockResolvedValueOnce('mockSalt');
     (bcrypt.hash as jest.Mock).mockResolvedValueOnce('mockHashedPassword');
+    
+    // Mock jwt.sign function
     (jwt.sign as jest.Mock).mockImplementationOnce((payload, secret, options, callback) => {
       callback(null, 'mockToken');
     });
@@ -73,6 +73,7 @@ describe('POST /register', () => {
   });
 
   it('should return an error if the email already exists', async () => {
+    // Mock User.findOne to return an existing user (indicating that the user already exists)
     (User.findOne as jest.Mock).mockResolvedValueOnce({
       id: 'existingUserId',
       email: 'existing@example.com'

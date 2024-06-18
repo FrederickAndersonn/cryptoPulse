@@ -156,6 +156,26 @@ const Navbar: React.FC = () => {
                 Forum
               </Box>
             </Link>
+
+             {/* Forum Link */}
+             <Link
+              as={RouterLink}
+              to="/sendfunds"
+              display="flex"
+              alignItems="center"
+              _hover={{
+                textDecoration: "none",
+                bg: "teal.600",
+                borderRadius: "md",
+                color: "black",
+              }}
+              p={2}
+            >
+              <FaForumbee color={"white"} />
+              <Box as="span" ml={2} fontSize="lg">
+                Transfer
+              </Box>
+            </Link>
           </Flex>
         )}
         {/* Remaining items (Login/Logout, Dark Mode) */}

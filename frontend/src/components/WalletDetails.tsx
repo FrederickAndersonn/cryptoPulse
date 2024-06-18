@@ -7,13 +7,9 @@ import {
   Heading,
   List,
   ListItem,
-  useColorMode,
-  Button,
-  IconButton,
-  Spacer,
-  Switch,
   VStack,
   Divider,
+  useColorMode,
 } from '@chakra-ui/react';
 
 interface Transaction {
@@ -37,6 +33,9 @@ const WalletDetails: React.FC = () => {
     address: '',
     transactions: [],
   });
+
+  const { colorMode, toggleColorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
 
   useEffect(() => {
     const fetchWalletDetails = async () => {
@@ -78,12 +77,14 @@ const WalletDetails: React.FC = () => {
   }, []);
 
   return (
-    <Flex direction="column" p={4} minHeight="100vh">
+    <Flex direction="column" p={4} minHeight="100vh" bg={isDark ? 'gray.900' : 'gray.50'}>
       <Flex align="center" justify="space-between">
-        <Heading size="lg">Wallet Details</Heading>
+        <Heading size="lg" color={isDark ? 'white' : 'black'}>
+          Wallet Details
+        </Heading>
       </Flex>
 
-      <Box mt={4} p={4} borderWidth="1px" borderRadius="lg" boxShadow="md">
+      <Box mt={4} p={4} borderWidth="1px" borderRadius="lg" boxShadow="md" bg={isDark ? 'gray.700' : 'white'} color={isDark ? 'white' : 'black'}>
         <Text>
           <strong>Balance:</strong> {walletInfo.balance}
         </Text>
@@ -92,10 +93,12 @@ const WalletDetails: React.FC = () => {
         </Text>
       </Box>
 
-      <Box mt={4} p={4} borderWidth="1px" borderRadius="lg" boxShadow="md">
-        <Heading size="md">Transactions</Heading>
-        <Divider mt={2} mb={2} />
-
+      <Box mt={4} p={4} borderWidth="1px" borderRadius="lg" boxShadow="md" bg={isDark ? 'gray.700' : 'white'} color={isDark ? 'white' : 'black'}>
+        <Heading size="md" mb={2} color={isDark ? 'white' : 'black'}>
+          Transactions
+        </Heading>
+        <Divider mb={2} />
+        
         <List spacing={3}>
           {walletInfo.transactions.map((transaction) => (
             <ListItem key={transaction.id}>

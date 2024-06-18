@@ -1,20 +1,20 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
 interface IPost extends Document {
   author: {
-    id: mongoose.Schema.Types.ObjectId;
+    id: Types.ObjectId;
     username: string;
   };
   Heading: string;
   description: string;
   date: Date;
-  comments: mongoose.Schema.Types.ObjectId[];
+  comments: Types.ObjectId[];
 }
 
 const postSchema: Schema<IPost> = new mongoose.Schema({
   author: {
     id: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: 'User',
       required: true
     },
@@ -37,10 +37,10 @@ const postSchema: Schema<IPost> = new mongoose.Schema({
   },
   comments: [
     {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: 'Comment'
     }
   ]
 });
 
-export default mongoose.model<IPost>('post', postSchema);
+export default mongoose.model<IPost>('Post', postSchema);

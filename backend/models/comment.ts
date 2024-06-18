@@ -1,14 +1,14 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
 interface IComment extends Document {
   author: {
-    id: mongoose.Schema.Types.ObjectId;
+    id: Types.ObjectId;
     username: string;
   };
   text: string;
   date: Date;
   post: {
-    id: mongoose.Schema.Types.ObjectId;
+    id: Types.ObjectId;
   };
 }
 

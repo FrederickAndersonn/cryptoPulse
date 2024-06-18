@@ -29,6 +29,17 @@ router.get('/posts', async (req, res) => {
   }
 });
 
+// Get all posts by a user
+router.get('/users/:userId/posts', async (req, res) => {
+  try {
+    const posts = await Post.find({ 'author.id': req.params.userId });
+    res.json(posts);
+  } catch (error) {
+    console.error('Error fetching user posts:', error);
+    res.status(500).send('Server error');
+  }
+});
+
 // Get a single post
 router.get('/posts/:id', async (req, res) => {
   try {

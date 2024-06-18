@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchUserProfile, UserProfile } from '../actions/userProfile';
 import { updatePassword, UpdatePasswordResponse } from '../actions/userProfile';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import {
   Box,
   Heading,
@@ -13,7 +14,14 @@ import {
   useColorModeValue,
   Flex,
   Spacer,
+  Stack,
 } from '@chakra-ui/react';
+
+interface Post {
+  _id: string;
+  heading: string;
+  description: string;
+}
 
 const UserDetails: React.FC = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -21,6 +29,7 @@ const UserDetails: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [passwordUpdateMessage, setPasswordUpdateMessage] = useState('');
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
   const navigate = useNavigate();
 
   const bg = useColorModeValue('gray.50', 'gray.800');
@@ -32,11 +41,41 @@ const UserDetails: React.FC = () => {
       const profile = await fetchUserProfile();
       if (profile) {
         setUserProfile(profile);
+        fetchUserPosts(profile._id); // Fetch user posts
       }
     };
 
     fetchProfile();
   }, []);
+
+  const fetchUserPosts = async (userId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5001/users/${userId}/posts`);
+      setUserPosts(response.data);
+    } catch (error) {
+      console.error('Error fetching user posts:', error);
+    }
+  };
+
+  const handleDeletePost = async (postId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found, please login first.');
+      return;
+    }
+
+    try {
+      await axios.delete(`http://localhost:5001/posts/${postId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      // Remove the deleted post from the local state
+      setUserPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+  };
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,6 +166,28 @@ const UserDetails: React.FC = () => {
           Go to Wallet Details
         </Button>
       </Flex>
+
+      <Spacer height={8} />
+      <Heading as="h2" size="lg" mt={6} mb={4} textAlign="center" color={textColor}>
+        Your Posts
+      </Heading>
+      <Box bg={boxBg} p={4} borderRadius="md" boxShadow="md" width="100%">
+        <Stack spacing={4}>
+          {userPosts.map((post) => (
+            <Box key={post._id} p={4} shadow="md" borderWidth="1px" borderRadius="md" bg={boxBg}>
+              <Heading fontSize="lg" color={textColor}>
+                {post.heading}
+              </Heading>
+              <Text mt={2} color={textColor}>
+                {post.description}
+              </Text>
+              <Button mt={4} colorScheme="red" onClick={() => handleDeletePost(post._id)}>
+                Delete Post
+              </Button>
+            </Box>
+          ))}
+        </Stack>
+      </Box>
     </Box>
   );
 };

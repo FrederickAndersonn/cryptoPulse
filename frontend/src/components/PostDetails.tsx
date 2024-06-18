@@ -36,7 +36,7 @@ interface Post {
   author: {
     id: string;
     username: string;
-    publicKey: string;  // Added publicKey here
+    publicKey: string;
   };
   date: string;
   comments: Comment[];
@@ -59,7 +59,6 @@ const PostDetails: React.FC = () => {
     const fetchPost = async () => {
       try {
         const response = await axios.get(`http://localhost:5001/posts/${id}`);
-        console.log('Fetched post:', response.data);  // Log the fetched post
         setPost(response.data);
         setLoading(false);
       } catch (error) {
@@ -72,12 +71,16 @@ const PostDetails: React.FC = () => {
 
   const handleDonate = () => {
     if (post && post.author.publicKey) {
-      console.log('Navigating to /sendfunds with destinationAddress:', post.author.publicKey);
       navigate('/sendfunds', { state: { destinationAddress: post.author.publicKey } });
     }
   };
 
   const handleAddComment = async () => {
+    if (!comment.trim()) {
+      // Trim the comment to ensure no empty spaces are submitted
+      return;
+    }
+
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found, please login first.');
@@ -213,11 +216,13 @@ const PostDetails: React.FC = () => {
               borderColor={borderColor}
             />
           </FormControl>
-          <Flex justifyContent="flex-end">
-            <Button mt={4} colorScheme="blue" onClick={handleAddComment}>
-              Submit
-            </Button>
-          </Flex>
+          {comment.trim() && (  // Only show the button if there is non-empty input
+            <Flex justifyContent="flex-end">
+              <Button mt={4} colorScheme="blue" onClick={handleAddComment}>
+                Submit
+              </Button>
+            </Flex>
+          )}
         </Box>
 
         <Box mt={10}>

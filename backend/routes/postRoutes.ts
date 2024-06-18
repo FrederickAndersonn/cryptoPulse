@@ -17,18 +17,19 @@ router.get('/posts', async (req, res) => {
 });
   
   // Get a single post
-  router.get('/posts/:id', async (req: Request, res: Response) => {
+  router.get('/posts/:id', async (req, res) => {
     try {
-      console.log(`Fetching post with id: ${req.params.id}`);
-      const post = await Post.findById(req.params.id).populate('author.id').populate('comments');
+      const post = await Post.findById(req.params.id).populate({
+        path: 'comments',
+        populate: { path: 'author.id', select: 'name' }
+      }).exec();
       if (!post) {
-        console.log('Post not found');
         return res.status(404).send('Post not found');
       }
       res.json(post);
     } catch (error) {
-      console.error(`Error fetching post with id ${req.params.id}:`, error);
-      res.status(500).send(error);
+      console.error('Error fetching post:', error);
+      res.status(500).send('Server error');
     }
   });
   

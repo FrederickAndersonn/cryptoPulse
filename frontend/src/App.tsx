@@ -10,7 +10,7 @@ import theme from './theme/theme'; // Import the custom theme
 import WalletDetails from './components/WalletDetails';
 import Posts from './components/Posts';import SendFundsForm from './components/SendFunds';
 import UserDetails from './pages/UserDetailsPage';
-
+import PostDetails from './components/PostDetails';
 function App() {
   return (
     <ChakraProvider theme={theme}>
@@ -27,6 +27,7 @@ function App() {
             <Route path="/forum" element={<Forum />} />
             <Route path="/sendfunds" element={<SendFundsForm />} />
             <Route path="/userdetails" element={<UserDetails />} />
+            <Route path="/post/:id" element={<PostDetails />} />
           </Routes>
         </Box>
       </Router>

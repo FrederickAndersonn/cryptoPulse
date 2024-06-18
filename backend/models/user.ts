@@ -29,6 +29,10 @@ const UserSchema: Schema<UserDocument> = new mongoose.Schema({
     type: String,
     required: false,
   },
+  secretKey: {
+    type: String,
+    required: false,
+  },
   initialBalance: {
     type: Number,
     required: true,

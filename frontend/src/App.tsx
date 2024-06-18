@@ -8,6 +8,7 @@ import ShowGraph from './components/ShowGraph';
 import CoinsPage from './pages/CoinsPage';
 import theme from './theme/theme'; // Import the custom theme
 import WalletDetails from './components/WalletDetails';
+import SendFundsForm from './components/SendFunds';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/coin/:id" element={<ShowGraph />} />
             <Route path="/walletdetails" element={<WalletDetails/>} />
+            <Route path="/sendfunds" element={<SendFundsForm />} />
           </Routes>
         </Box>
       </Router>

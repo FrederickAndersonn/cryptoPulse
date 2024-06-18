@@ -9,6 +9,7 @@ import CoinsPage from './pages/CoinsPage';
 import theme from './theme/theme'; // Import the custom theme
 import WalletDetails from './components/WalletDetails';
 import SendFundsForm from './components/SendFunds';
+import UserDetails from './pages/UserDetailsPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/coin/:id" element={<ShowGraph />} />
             <Route path="/walletdetails" element={<WalletDetails/>} />
             <Route path="/sendfunds" element={<SendFundsForm />} />
+            <Route path="/userdetails" element={<UserDetails />} />
           </Routes>
         </Box>
       </Router>

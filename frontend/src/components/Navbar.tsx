@@ -88,7 +88,6 @@ const Navbar: React.FC = () => {
         {/* Remaining items (Login, Sign Up, Dark Mode) */}
         {!isSmallScreen && (
           <Flex align="center">
-            <Spacer />
 
             {/* Login Link */}
             <Link
@@ -107,10 +106,22 @@ const Navbar: React.FC = () => {
               as={RouterLink}
               to="/signup"
               color={'white'}
+              mr={4}
               _hover={{ textDecoration: 'none', bg: 'teal.600', borderRadius: 'md', color: 'black' }}
               p={2}
             >
               Sign Up
+            </Link>
+            <Spacer />
+             {/* User profile Link */}
+             <Link
+              as={RouterLink}
+              to="/userdetails"
+              color={'white'}
+              _hover={{ textDecoration: 'none', bg: 'teal.600', borderRadius: 'md', color: 'black' }}
+              p={2}
+            >
+              User Profile
             </Link>
 
             {/* Dark Mode Toggle */}

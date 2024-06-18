@@ -22,6 +22,7 @@ import {
   FaBars,
   FaPenFancy,
   FaForumbee,
+  FaMoneyCheckAlt,
 } from "react-icons/fa";
 
 const Navbar: React.FC = () => {
@@ -157,7 +158,7 @@ const Navbar: React.FC = () => {
               </Box>
             </Link>
 
-             {/* Forum Link */}
+             {/* Transfer Link */}
              <Link
               as={RouterLink}
               to="/sendfunds"
@@ -171,7 +172,7 @@ const Navbar: React.FC = () => {
               }}
               p={2}
             >
-              <FaForumbee color={"white"} />
+              <FaMoneyCheckAlt color={"white"} />
               <Box as="span" ml={2} fontSize="lg">
                 Transfer
               </Box>
@@ -269,7 +270,7 @@ const Navbar: React.FC = () => {
       </Flex>
 
       {/* Drawer for small screens */}
-      <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
+      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent
           bg={isDark ? "gray.800" : "brand.300"}
@@ -277,7 +278,7 @@ const Navbar: React.FC = () => {
         >
           <DrawerCloseButton />
           <DrawerBody>
-            <Flex direction="column" align="center">
+            <Flex direction="column" align="start" p={4}>
               {/* Home Link */}
               <Link
                 as={RouterLink}
@@ -328,6 +329,19 @@ const Navbar: React.FC = () => {
                 _hover={{ bg: "teal.600", borderRadius: "md", color: "black" }}
               >
                 Forum
+              </Link>
+
+              {/* Transfer Link */}
+              <Link
+                as={RouterLink}
+                to="/sendfunds"
+                color={"white"}
+                display="block"
+                py={2}
+                onClick={onClose}
+                _hover={{ bg: "teal.600", borderRadius: "md", color: "black" }}
+              >
+                Transfer
               </Link>
 
               {/* Conditional rendering of Login/Logout link in Drawer */}
@@ -387,6 +401,23 @@ const Navbar: React.FC = () => {
                   </Link>
                 </>
               )}
+
+              {/* User profile Link */}
+              <Link
+                as={RouterLink}
+                to="/userdetails"
+                color={"white"}
+                display="block"
+                py={2}
+                onClick={onClose}
+                _hover={{
+                  bg: "teal.600",
+                  borderRadius: "md",
+                  color: "black",
+                }}
+              >
+                User Profile
+              </Link>
 
               {/* Dark Mode Toggle */}
               <IconButton

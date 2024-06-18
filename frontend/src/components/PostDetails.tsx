@@ -131,6 +131,29 @@ const PostDetails: React.FC = () => {
           By {post.author.username} on {new Date(post.date).toLocaleDateString()}
         </Text>
 
+        <Box mt={6}>
+            <Heading size="md" mb={4} color={textColor}>
+              Add a Comment
+            </Heading>
+            <FormControl>
+              <FormLabel color={formLabelColor}>Comment</FormLabel>
+              <Input
+                type="text"
+                placeholder="Enter your comment"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                bg={inputBg}
+                color={textColor}
+                borderColor={borderColor}
+              />
+            </FormControl>
+            <Flex justifyContent="flex-end">
+              <Button mt={4} colorScheme="blue" onClick={handleAddComment}>
+                Submit
+              </Button>
+            </Flex>
+          </Box>
+
         <Box mt={10}>
           <Heading size="md" mb={4} color={textColor}>
             Comments
@@ -152,27 +175,6 @@ const PostDetails: React.FC = () => {
               </Box>
             ))}
           </Stack>
-
-          <Box mt={6}>
-            <Heading size="md" mb={4} color={textColor}>
-              Add a Comment
-            </Heading>
-            <FormControl>
-              <FormLabel color={formLabelColor}>Comment</FormLabel>
-              <Input
-                type="text"
-                placeholder="Enter your comment"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                bg={inputBg}
-                color={textColor}
-                borderColor={borderColor}
-              />
-            </FormControl>
-            <Button mt={4} colorScheme="blue" onClick={handleAddComment}>
-              Submit
-            </Button>
-          </Box>
         </Box>
       </Box>
     </Box>

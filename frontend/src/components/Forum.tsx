@@ -30,7 +30,7 @@ const Forum: React.FC = () => {
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState<number>(1);
   const navigate = useNavigate();
-  const bg = useColorModeValue('gray.50', 'gray.800');
+  const bg = useColorModeValue('gray.50', 'gray.900');
   const boxBg = useColorModeValue('white', 'gray.700');
   const hoverBg = useColorModeValue('gray.200', 'gray.600');
   const textColor = useColorModeValue('black', 'white');

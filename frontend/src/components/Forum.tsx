@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
@@ -29,11 +29,11 @@ interface Post {
 }
 
 const Forum: React.FC = () => {
-  const [posts, setPosts] = React.useState<Post[]>([]);
-  const [searchWord, setSearchWord] = React.useState<string>('');
-  const [loading, setLoading] = React.useState(true);
-  const [page, setPage] = React.useState<number>(1);
-  const [votedPosts, setVotedPosts] = React.useState<{ [key: string]: number }>({});
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [searchWord, setSearchWord] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState<number>(1);
+  const [votedPosts, setVotedPosts] = useState<{ [key: string]: number }>({});
   const postsPerPage = 10;
   const navigate = useNavigate();
   const bg = useColorModeValue('gray.50', 'gray.900');
@@ -41,12 +41,13 @@ const Forum: React.FC = () => {
   const hoverBg = useColorModeValue('gray.200', 'gray.600');
   const textColor = useColorModeValue('black', 'white');
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get('http://localhost:5001/posts');
         setPosts(response.data);
         setLoading(false);
+        loadVotesFromLocalStorage(response.data);
       } catch (error) {
         console.error('Error fetching posts:', error);
         setLoading(false);
@@ -55,17 +56,23 @@ const Forum: React.FC = () => {
     fetchPosts();
   }, []);
 
-  const filterPosts = posts.filter((post) =>
-    post.heading.toLowerCase().includes(searchWord.toLowerCase())
-  );
+  const loadVotesFromLocalStorage = (posts: Post[]) => {
+    const storedVotes = JSON.parse(localStorage.getItem('votedPosts') || '{}');
+    const initialVotedPosts = posts.reduce((acc, post) => {
+      if (storedVotes[post._id]) {
+        acc[post._id] = storedVotes[post._id];
+      }
+      return acc;
+    }, {} as { [key: string]: number });
+    setVotedPosts(initialVotedPosts);
+  };
 
-  const displayedPosts = filterPosts.slice(
-    (page - 1) * postsPerPage,
-    page * postsPerPage
-  );
+  const saveVotesToLocalStorage = (votedPosts: { [key: string]: number }) => {
+    localStorage.setItem('votedPosts', JSON.stringify(votedPosts));
+  };
 
   const handleNextPage = () => {
-    if (page * postsPerPage < filterPosts.length) {
+    if (page * postsPerPage < posts.length) {
       setPage((prevPage) => prevPage + 1);
     }
   };
@@ -109,10 +116,12 @@ const Forum: React.FC = () => {
       setVotedPosts((prevVotedPosts) => {
         const currentVote = prevVotedPosts[postId];
         const newVote = currentVote === vote ? 0 : vote;
-        return {
+        const updatedVotes = {
           ...prevVotedPosts,
           [postId]: newVote,
         };
+        saveVotesToLocalStorage(updatedVotes);
+        return updatedVotes;
       });
     } catch (error) {
       console.error('Failed to vote on post:', error);
@@ -151,59 +160,65 @@ const Forum: React.FC = () => {
         />
       </Box>
       <Stack spacing={4}>
-        {displayedPosts.map((post) => (
-          <Box
-            key={post._id}
-            p={5}
-            shadow="md"
-            borderWidth="1px"
-            borderRadius="lg"
-            bg={boxBg}
-            _hover={{ bg: hoverBg }}
-            cursor="pointer"
-            onClick={() => handlePostClick(post._id)}
-          >
-            <Heading fontSize="xl" color={textColor}>
-              {post.heading}
-            </Heading>
-            <Text mt={4} color={textColor}>
-              {truncateDescription(post.description)}
-            </Text>
-            <Text mt={4} fontSize="sm" color="gray.500">
-              By {post.author.username} on {new Date(post.date).toLocaleDateString()}
-            </Text>
-            <Flex mt={2} justifyContent="space-between" alignItems="center">
-              <Text fontSize="sm" color={textColor}>
-                {post.votes} Votes
+        {posts
+          .filter((post) =>
+            post.heading.toLowerCase().includes(searchWord.toLowerCase())
+          )
+          .slice((page - 1) * postsPerPage, page * postsPerPage)
+          .map((post) => (
+            <Box
+              key={post._id}
+              p={5}
+              shadow="md"
+              borderWidth="1px"
+              borderRadius="lg"
+              bg={boxBg}
+              _hover={{ bg: hoverBg }}
+              cursor="pointer"
+              onClick={() => handlePostClick(post._id)}
+            >
+              <Heading fontSize="xl" color={textColor}>
+                {post.heading}
+              </Heading>
+              <Text mt={4} color={textColor}>
+                {truncateDescription(post.description)}
               </Text>
-              <Flex>
-                <IconButton
-                  aria-label="Upvote post"
-                  icon={<FaArrowUp />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleVote(post._id, 1);
-                  }}
-                  size="sm"
-                  mr={2}
-                  bg={votedPosts[post._id] === 1 ? 'teal.500' : undefined}
-                  _hover={{ bg: 'teal.400' }}
-                />
-                <IconButton
-                  aria-label="Downvote post"
-                  icon={<FaArrowDown />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleVote(post._id, -1);
-                  }}
-                  size="sm"
-                  bg={votedPosts[post._id] === -1 ? 'red.500' : undefined}
-                  _hover={{ bg: 'red.400' }}
-                />
+              <Text mt={4} fontSize="sm" color="gray.500">
+                By {post.author.username} on{' '}
+                {new Date(post.date).toLocaleDateString()}
+              </Text>
+              <Flex mt={2} justifyContent="space-between" alignItems="center">
+                <Text fontSize="sm" color={textColor}>
+                  {post.votes} Votes
+                </Text>
+                <Flex>
+                  <IconButton
+                    aria-label="Upvote post"
+                    icon={<FaArrowUp />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleVote(post._id, 1);
+                    }}
+                    size="sm"
+                    mr={2}
+                    bg={votedPosts[post._id] === 1 ? 'teal.500' : undefined}
+                    _hover={{ bg: 'teal.400' }}
+                  />
+                  <IconButton
+                    aria-label="Downvote post"
+                    icon={<FaArrowDown />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleVote(post._id, -1);
+                    }}
+                    size="sm"
+                    bg={votedPosts[post._id] === -1 ? 'red.500' : undefined}
+                    _hover={{ bg: 'red.400' }}
+                  />
+                </Flex>
               </Flex>
-            </Flex>
-          </Box>
-        ))}
+            </Box>
+          ))}
       </Stack>
       <Flex justifyContent="space-between" mt={4}>
         <Button onClick={handlePreviousPage} disabled={page === 1}>
@@ -212,7 +227,7 @@ const Forum: React.FC = () => {
         <Text color={textColor}>Page {page}</Text>
         <Button
           onClick={handleNextPage}
-          disabled={page * postsPerPage >= filterPosts.length}
+          disabled={page * postsPerPage >= posts.length}
         >
           Next
         </Button>

@@ -110,55 +110,63 @@ const PostDetails: React.FC = () => {
 
   return (
     <Box p={5}>
-      <Heading mb={6} textAlign="center" color={isDark ? 'white' : 'black'}>
-        {post.heading}
-      </Heading>
-      <Text mt={4}>{post.description}</Text>
-      <Text mt={4} fontSize="sm" color="gray.500">
-        By {post.author.username} on {new Date(post.date).toLocaleDateString()}
-      </Text>
-
-      <Box mt={10}>
-        <Heading size="md" mb={4} color={isDark ? 'white' : 'black'}>
-          Comments
+      <Box
+        borderWidth="1px"
+        borderRadius="lg"
+        p={5}
+        boxShadow="md"
+        bg={isDark ? 'gray.700' : 'white'}
+      >
+        <Heading mb={6} textAlign="center" color={isDark ? 'white' : 'black'}>
+          {post.heading}
         </Heading>
-        <Stack spacing={5}>
-          {post.comments.map((comment) => (
-            <Box
-              key={comment._id}
-              p={4}
-              shadow="md"
-              borderWidth="1px"
-              borderRadius="md"
-              bg={isDark ? 'gray.700' : 'white'}
-            >
-              <Text>{comment.text}</Text>
-              <Text mt={2} fontSize="sm" color="gray.500">
-                By {comment.author.username} on {new Date(comment.date).toLocaleDateString()}
-              </Text>
-            </Box>
-          ))}
-        </Stack>
+        <Text mt={4}>{post.description}</Text>
+        <Text mt={4} fontSize="sm" color="gray.500">
+          By {post.author.username} on {new Date(post.date).toLocaleDateString()}
+        </Text>
 
-        <Box mt={6}>
+        <Box mt={10}>
           <Heading size="md" mb={4} color={isDark ? 'white' : 'black'}>
-            Add a Comment
+            Comments
           </Heading>
-          <FormControl>
-            <FormLabel color={isDark ? 'white' : 'black'}>Comment</FormLabel>
-            <Input
-              type="text"
-              placeholder="Enter your comment"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              bg={isDark ? 'gray.800' : 'white'}
-              color={isDark ? 'white' : 'black'}
-              borderColor={isDark ? 'gray.600' : 'gray.200'}
-            />
-          </FormControl>
-          <Button mt={4} colorScheme="blue" onClick={handleAddComment}>
-            Submit
-          </Button>
+          <Stack spacing={5}>
+            {post.comments.map((comment) => (
+              <Box
+                key={comment._id}
+                p={4}
+                shadow="md"
+                borderWidth="1px"
+                borderRadius="md"
+                bg={isDark ? 'gray.700' : 'white'}
+              >
+                <Text>{comment.text}</Text>
+                <Text mt={2} fontSize="sm" color="gray.500">
+                  By {comment.author.username} on {new Date(comment.date).toLocaleDateString()}
+                </Text>
+              </Box>
+            ))}
+          </Stack>
+
+          <Box mt={6}>
+            <Heading size="md" mb={4} color={isDark ? 'white' : 'black'}>
+              Add a Comment
+            </Heading>
+            <FormControl>
+              <FormLabel color={isDark ? 'white' : 'black'}>Comment</FormLabel>
+              <Input
+                type="text"
+                placeholder="Enter your comment"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                bg={isDark ? 'gray.800' : 'white'}
+                color={isDark ? 'white' : 'black'}
+                borderColor={isDark ? 'gray.600' : 'gray.200'}
+              />
+            </FormControl>
+            <Button mt={4} colorScheme="blue" onClick={handleAddComment}>
+              Submit
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Box>

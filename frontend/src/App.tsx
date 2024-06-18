@@ -7,6 +7,7 @@ import ShowGraph from './components/ShowGraph';
 
 import CoinsPage from './pages/CoinsPage';
 import theme from './theme/theme'; // Import the custom theme
+import WalletDetails from './components/WalletDetails';
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/coin/:id" element={<ShowGraph />} />
-
+            <Route path="/walletdetails" element={<WalletDetails/>} />
           </Routes>
         </Box>
       </Router>

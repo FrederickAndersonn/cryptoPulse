@@ -1,22 +1,38 @@
-import mongoose, { Document, Schema } from 'mongoose';
+// ../models/user.ts
 
-interface IUser extends Document {
+import mongoose, { Document } from 'mongoose';
+
+export interface UserDocument extends Document {
   name: string;
   email: string;
   password: string;
-  mywatchlist: string[];
-  comments: mongoose.Schema.Types.ObjectId[];
-  posts: mongoose.Schema.Types.ObjectId[];
+  publicKey: string;
+  secretKey: string;
+  initialBalance: number;
 }
 
-const UserSchema: Schema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, unique: true, required: true, index: true }, 
-  password: { type: String, required: true },
-  mywatchlist: { type: [String], default: [] },
-  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }]
+const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  publicKey: {
+    type: String,
+    required: false,
+  },
+  secretKey: {
+    type: String,
+    required: false,
+  }
 });
 
-const User = mongoose.model<IUser>('User', UserSchema);
-export default User;
+export default mongoose.model<UserDocument>('User', UserSchema);

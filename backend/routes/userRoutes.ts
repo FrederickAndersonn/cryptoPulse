@@ -1,3 +1,5 @@
+// ../routes/users.ts
+
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import { check, validationResult } from 'express-validator';
@@ -6,17 +8,29 @@ import User from '../models/user';
 
 const router = express.Router();
 const jwtSecret = "my secret token";
+const StellarSdk = require('stellar-sdk');
 
+// Function to fund newly created Stellar account with initial balance
+const fundAccount = async (publicKey: string) => {
+  try {
+    const response = await fetch(
+      `https://friendbot.stellar.org?addr=${encodeURIComponent(publicKey)}`
+    );
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    return e;
+  }
+};
 
 router.post(
   '/',
   [
     check('name', 'Name is required').not().isEmpty(),
-    check('email', 'Please include a proper email').isEmail(), // email format
-    check('password', 'Please enter a password with 5 or more characters').isLength({ min: 5 })
+    check('email', 'Please include a proper email').isEmail(),
+    check('password', 'Please enter a password with 5 or more characters').isLength({ min: 5 }),
   ],
   async (req: express.Request, res: express.Response) => {
-    console.log(req);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -25,34 +39,44 @@ router.post(
     const { name, email, password } = req.body;
 
     try {
-      // See if user exists
+      // Check if user exists
       let existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
       }
 
-      // Encrypt users password
+      // Create new Stellar keypair
+      const keypair = StellarSdk.Keypair.random();
+      const publicKey = keypair.publicKey();
+      const secretKey = keypair.secret();
+
+      // Fund Stellar account with initial balance using Friendbot
+      await fundAccount(publicKey);
+
+      // Encrypt user's password
       const newUser = new User({
         name,
         email,
-        password
+        password,
+        publicKey,
+        secretKey
       });
 
       const salt = await bcrypt.genSalt(10);
       newUser.password = await bcrypt.hash(password, salt);
       await newUser.save();
 
-      // Return json webtoken
+      // Return JWT token
       const payload = {
         user: {
-          id: newUser.id
-        }
+          id: newUser.id,
+        },
       };
 
       jwt.sign(
         payload,
         jwtSecret,
-        { expiresIn: 360000 }, 
+        { expiresIn: 360000 },
         (err, token) => {
           if (err) {
             throw err;

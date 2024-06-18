@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 
 import userRoutes from './routes/userRoutes';
 import loginRoutes from './routes/loginRoutes';
+import walletDetailsRoutes from './routes/walletDetailsRoutes';
 
 const mongourl = "mongodb+srv://public:public@cluster0.jcpik0t.mongodb.net/";
 
@@ -26,6 +27,7 @@ app.get("/", (req: Request, res: Response) => res.sendFile(path.resolve(__dirnam
 app.use(express.static(path.join(__dirname, "build")));
 app.use("/register", userRoutes);
 app.use("/login", loginRoutes);
+app.use("/wallet", walletDetailsRoutes);
 
 app.get("*", (req: Request, res: Response) => res.sendFile(path.resolve(__dirname, "build", "index.html")));
 

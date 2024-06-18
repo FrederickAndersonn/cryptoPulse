@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import {
   Box,
   Heading,
@@ -14,6 +15,7 @@ import {
   FormLabel,
   Input,
   Button,
+  IconButton,
 } from '@chakra-ui/react';
 
 interface Comment {
@@ -24,6 +26,7 @@ interface Comment {
     username: string;
   };
   date: string;
+  likes: number;
 }
 
 interface Post {
@@ -106,6 +109,56 @@ const PostDetails: React.FC = () => {
     }
   };
 
+  const handleLike = async (commentId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found, please login first.');
+      return;
+    }
+
+    try {
+      await axios.post(
+        `http://localhost:5001/comment/${commentId}/like`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Re-fetch post to update comments
+      const response = await axios.get(`http://localhost:5001/posts/${id}`);
+      setPost(response.data);
+    } catch (error) {
+      console.error('Failed to like comment:', error);
+    }
+  };
+
+  const handleUnlike = async (commentId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found, please login first.');
+      return;
+    }
+
+    try {
+      await axios.post(
+        `http://localhost:5001/comment/${commentId}/unlike`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Re-fetch post to update comments
+      const response = await axios.get(`http://localhost:5001/posts/${id}`);
+      setPost(response.data);
+    } catch (error) {
+      console.error('Failed to unlike comment:', error);
+    }
+  };
+
   if (loading) {
     return (
       <Flex height="100vh" alignItems="center" justifyContent="center">
@@ -185,6 +238,24 @@ const PostDetails: React.FC = () => {
                 <Text mt={2} fontSize="sm" color="gray.500">
                   By {comment.author.username} on {new Date(comment.date).toLocaleDateString()}
                 </Text>
+                <Flex mt={2} justifyContent="space-between" alignItems="center">
+                  <Flex>
+                    <IconButton
+                      aria-label="Like comment"
+                      icon={<FaThumbsUp />}
+                      onClick={() => handleLike(comment._id)}
+                      size="sm"
+                      mr={2}
+                    />
+                    <IconButton
+                      aria-label="Unlike comment"
+                      icon={<FaThumbsDown />}
+                      onClick={() => handleUnlike(comment._id)}
+                      size="sm"
+                    />
+                  </Flex>
+                  <Text color={textColor}>{comment.likes} Likes</Text>
+                </Flex>
               </Box>
             ))}
           </Stack>

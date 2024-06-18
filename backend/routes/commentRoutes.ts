@@ -112,4 +112,53 @@ router.delete('/deletecomment', async (req: Request, res: Response) => {
   }
 });
 
+// Like a comment
+router.post('/:commentId/like', async (req: Request, res: Response) => {
+  const userId = getUserIdFromToken(req);
+  if (!userId) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  try {
+    const comment = await Comment.findById(req.params.commentId);
+    if (!comment) {
+      return res.status(404).send('Comment not found');
+    }
+    if (comment.likedBy.includes(new Types.ObjectId(userId))) {
+      return res.status(400).send('User has already liked this comment');
+    }
+    comment.likes += 1;
+    comment.likedBy.push(new Types.ObjectId(userId));
+    await comment.save();
+    res.json(comment);
+  } catch (err: any) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Unlike a comment
+router.post('/:commentId/unlike', async (req: Request, res: Response) => {
+  const userId = getUserIdFromToken(req);
+  if (!userId) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  try {
+    const comment = await Comment.findById(req.params.commentId);
+    if (!comment) {
+      return res.status(404).send('Comment not found');
+    }
+    if (!comment.likedBy.includes(new Types.ObjectId(userId))) {
+      return res.status(400).send('User has not liked this comment');
+    }
+    comment.likes = Math.max(comment.likes - 1, 0); // Ensure likes don't go negative
+    comment.likedBy = comment.likedBy.filter((id) => !id.equals(new Types.ObjectId(userId)));
+    await comment.save();
+    res.json(comment);
+  } catch (err: any) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 export default router;

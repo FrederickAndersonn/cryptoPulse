@@ -12,6 +12,8 @@ import Posts from './components/Posts';import SendFundsForm from './components/S
 import UserDetails from './pages/UserDetailsPage';
 import PostDetails from './components/PostDetails';
 import HomePage from './components/HomePage';
+import CryptoConverterPage from './pages/CryptoConverterPage';
+
 function App() {
   return (
     <ChakraProvider theme={theme}>
@@ -30,6 +32,7 @@ function App() {
             <Route path="/sendfunds" element={<SendFundsForm />} />
             <Route path="/userdetails" element={<UserDetails />} />
             <Route path="/post/:id" element={<PostDetails />} />
+            <Route path="/cryptoconverter" element={<CryptoConverterPage />} />
           </Routes>
         </Box>
       </Router>

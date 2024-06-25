@@ -14,6 +14,8 @@ import PostDetails from './components/PostDetails';
 import HomePage from './components/HomePage';
 import WatchlistPage from './pages/WatchlistPage';
 
+import CryptoConverterPage from './pages/CryptoConverterPage';
+
 function App() {
   return (
     <ChakraProvider theme={theme}>
@@ -34,6 +36,7 @@ function App() {
             <Route path="/post/:id" element={<PostDetails />} />
             <Route path="/watchlist" element={<WatchlistPage />} />
 
+            <Route path="/cryptoconverter" element={<CryptoConverterPage />} />
           </Routes>
         </Box>
       </Router>

@@ -23,6 +23,7 @@ import {
   FaPenFancy,
   FaForumbee,
   FaMoneyCheckAlt,
+  FaExchangeAlt,
 } from "react-icons/fa";
 
 import logo from "../assets/small_logo.png";
@@ -169,6 +170,7 @@ const Navbar: React.FC = () => {
               to="/sendfunds"
               display="flex"
               alignItems="center"
+              mr={4}
               _hover={{
                 textDecoration: "none",
                 bg: "teal.600",
@@ -180,6 +182,24 @@ const Navbar: React.FC = () => {
               <FaMoneyCheckAlt color={"white"} />
               <Box as="span" ml={2} fontSize="lg">
                 Transfer
+              </Box>
+            </Link>
+            <Link
+              as={RouterLink}
+              to="/cryptoconverter"
+              display="flex"
+              alignItems="center"
+              _hover={{
+                textDecoration: "none",
+                bg: "teal.600",
+                borderRadius: "md",
+                color: "black",
+              }}
+              p={2}
+            >
+              <FaExchangeAlt color={"white"} />
+              <Box as="span" ml={2} fontSize="lg">
+                Converter
               </Box>
             </Link>
           </Flex>
@@ -348,7 +368,17 @@ const Navbar: React.FC = () => {
               >
                 Transfer
               </Link>
-
+              <Link
+                as={RouterLink}
+                to="/cryptoconverter"
+                color={"white"}
+                display="block"
+                py={2}
+                onClick={onClose}
+                _hover={{ bg: "teal.600", borderRadius: "md", color: "black" }}
+              >
+                Converter
+              </Link>
               {/* Conditional rendering of Login/Logout link in Drawer */}
               {isLoggedIn ? (
                 <Link

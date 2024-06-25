@@ -17,8 +17,10 @@ import {
   Heading,
   useColorModeValue,
   Button,
-  Flex
+  Flex,
+  useToast,
 } from '@chakra-ui/react';
+import { addToWatchlist } from '../actions/watchlistService'; // Correct path to service
 
 const CoinTable: React.FC = () => {
   const [coins, setCoins] = useState<Coin[]>([]);
@@ -27,9 +29,10 @@ const CoinTable: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const navigate = useNavigate();
   const bg = useColorModeValue('gray.50', 'gray.800');
-  const tableBg = useColorModeValue('white', 'gray.700'); // Light mode: white, Dark mode: gray.700
-  const hoverBg = useColorModeValue('gray.200', 'gray.600'); // Light mode: gray.200, Dark mode: gray.600
-  const textColor = useColorModeValue('black', 'white'); // Light mode: black, Dark mode: white
+  const tableBg = useColorModeValue('white', 'gray.700');
+  const hoverBg = useColorModeValue('gray.200', 'gray.600');
+  const textColor = useColorModeValue('black', 'white');
+  const toast = useToast();
 
   useEffect(() => {
     coinData(page)
@@ -60,6 +63,32 @@ const CoinTable: React.FC = () => {
     navigate(`/coin/${id}`);
   };
 
+  const handleAddToWatchlist = async (e: React.MouseEvent, coinId: string) => {
+    e.stopPropagation(); // Prevent the row click event
+    const userId = localStorage.getItem('userId'); // Assuming user ID is stored in localStorage
+    try {
+      if (userId) {
+        await addToWatchlist(userId, coinId);
+        toast({
+          title: "Coin added to watchlist.",
+          description: "The coin has been added to your watchlist successfully.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error('Error adding to watchlist:', error);
+      toast({
+        title: "Error adding coin to watchlist.",
+        description: "There was an error adding the coin to your watchlist. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Box width="100%" p={4} bg={bg} minHeight="100vh">
       <Heading as="h1" mb={4} textAlign="center" color={textColor}>
@@ -84,6 +113,7 @@ const CoinTable: React.FC = () => {
               <Th color={textColor}>Price in BTC</Th>
               <Th color={textColor}>Price in USD</Th>
               <Th color={textColor}>Last 7 Days</Th>
+              <Th color={textColor}>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -107,6 +137,9 @@ const CoinTable: React.FC = () => {
                 <Td color={textColor}>${coin.current_price.toFixed(2)}</Td>
                 <Td>
                   <CoinGraph7Days data={coin.last_7_days || []} />
+                </Td>
+                <Td>
+                  <Button onClick={(e) => handleAddToWatchlist(e, coin.id)}>Add to Watchlist</Button>
                 </Td>
               </Tr>
             ))}

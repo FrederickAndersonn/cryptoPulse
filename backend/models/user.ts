@@ -9,7 +9,8 @@ export interface UserDocument extends Document {
   initialBalance: number;
   comments: Types.ObjectId[];
   posts: Types.ObjectId[];
-  transactions: string[]; 
+  transactions: string[];
+  watchlist: string[]; // Add watchlist field
 }
 
 const UserSchema: Schema<UserDocument> = new mongoose.Schema({
@@ -54,6 +55,10 @@ const UserSchema: Schema<UserDocument> = new mongoose.Schema({
   transactions: {
     type: [String], // Array of strings (transaction IDs)
     default: [],   // Default value is an empty array
+  },
+  watchlist: {
+    type: [String], // Array of coin IDs
+    default: [],    // Default value is an empty array
   },
 });
 

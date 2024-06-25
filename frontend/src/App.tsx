@@ -12,6 +12,8 @@ import Posts from './components/Posts';import SendFundsForm from './components/S
 import UserDetails from './pages/UserDetailsPage';
 import PostDetails from './components/PostDetails';
 import HomePage from './components/HomePage';
+import WatchlistPage from './pages/WatchlistPage';
+
 function App() {
   return (
     <ChakraProvider theme={theme}>
@@ -30,6 +32,8 @@ function App() {
             <Route path="/sendfunds" element={<SendFundsForm />} />
             <Route path="/userdetails" element={<UserDetails />} />
             <Route path="/post/:id" element={<PostDetails />} />
+            <Route path="/watchlist" element={<WatchlistPage />} />
+
           </Routes>
         </Box>
       </Router>

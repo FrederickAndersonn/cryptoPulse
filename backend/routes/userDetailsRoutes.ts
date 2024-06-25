@@ -59,4 +59,55 @@ router.put(
   }
 );
 
+// Add coin to watchlist
+router.put('/:id/watchlist', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    const { coinId } = req.body;
+    if (!user.watchlist.includes(coinId)) {
+      user.watchlist.push(coinId);
+      await user.save();
+      res.json(user.watchlist);
+    } else {
+      res.status(400).json({ msg: 'Coin already in watchlist' });
+    }
+  } catch (error) {
+    console.error('Error adding to watchlist:', error);
+    res.status(500).send('Server error');
+  }
+});
+
+// Get user's watchlist
+router.get('/:id/watchlist', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    res.json(user.watchlist);
+  } catch (error) {
+    console.error('Error fetching watchlist:', error);
+    res.status(500).send('Server error');
+  }
+});
+
+// Remove coin from watchlist
+router.delete('/:id/watchlist/:coinId', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    const coinId = req.params.coinId;
+    user.watchlist = user.watchlist.filter((id) => id !== coinId);
+    await user.save();
+    res.json(user.watchlist);
+  } catch (error) {
+    console.error('Error removing from watchlist:', error);
+    res.status(500).send('Server error');
+  }
+});
 export default router;

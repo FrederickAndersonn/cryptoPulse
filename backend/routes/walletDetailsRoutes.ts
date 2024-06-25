@@ -2,6 +2,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 const { Horizon, Keypair, StellarSdk, TransactionBuilder, BASE_FEE, Networks, Asset, Operation, Memo } = require('@stellar/stellar-sdk');
 import User from '../models/user';
+import { decrypt, encrypt } from '../utils/encryption'; 
 
 const router = express.Router();
 const jwtSecret = "my secret token";
@@ -47,8 +48,9 @@ router.get('/details', authMiddleware, async (req: express.Request, res: express
   }
 });
 
-export async function sendFunds(destinationID: string, secretKey: string, amount: string, memo: string){
+export async function sendFunds(destinationID: string, encryptedSecretKey: string, publicKey: string, amount: string, memo: string) {
   try {
+    const secretKey = decrypt(encryptedSecretKey); 
     const sourceKeys = Keypair.fromSecret(secretKey);
     let transaction;
     
@@ -81,7 +83,7 @@ export async function sendFunds(destinationID: string, secretKey: string, amount
 
         // Save transaction ID to user's document
         const transactionId = result.hash;
-        await saveTransactionToUser(transactionId, secretKey);
+        await saveTransactionToUser(transactionId, publicKey);
 
         return result;
       })
@@ -100,9 +102,9 @@ export async function sendFunds(destinationID: string, secretKey: string, amount
   }
 }
 
-async function saveTransactionToUser(transactionId: string, secretKey: string): Promise<void> {
+async function saveTransactionToUser(transactionId: string, publicKey: string): Promise<void> {
   try {
-    const user = await User.findOne({ secretKey });
+    const user = await User.findOne({ publicKey: publicKey });
     if (!user) {
       throw new Error('User not found');
     }
@@ -129,7 +131,7 @@ router.post('/sendfunds', authMiddleware, async (req: express.Request, res: expr
       return res.status(404).json({ msg: 'User not found' });
     }
 
-    const result = await sendFunds(destinationID, user.secretKey, amount, memo);
+    const result = await sendFunds(destinationID, user.secretKey, user.publicKey, amount, memo);
     res.json(result);
   } catch (err) {
     console.error('Error sending funds:', err);

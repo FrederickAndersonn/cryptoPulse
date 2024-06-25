@@ -1,10 +1,9 @@
-// ../routes/users.ts
-
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import { check, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
+import { encrypt } from '../utils/encryption';
 
 const router = express.Router();
 const jwtSecret = "my secret token";
@@ -53,13 +52,16 @@ router.post(
       // Fund Stellar account with initial balance using Friendbot
       await fundAccount(publicKey);
 
+      // Encrypt the secret key
+      const encryptedSecretKey = encrypt(secretKey);
+
       // Encrypt user's password
       const newUser = new User({
         name,
         email,
         password,
         publicKey,
-        secretKey
+        secretKey: encryptedSecretKey
       });
 
       const salt = await bcrypt.genSalt(10);

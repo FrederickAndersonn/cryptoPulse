@@ -1,0 +1,20 @@
+import crypto from 'crypto';
+
+const algorithm = 'aes-256-ctr';
+const secretKey = 'e99a8f8427e4a72b8f4f5e30850ccf9c'; // Replace with your generated key
+const iv = crypto.randomBytes(16);
+
+export const encrypt = (text: string): string => {
+  const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+  const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
+  return `${iv.toString('hex')}:${encrypted.toString('hex')}`;
+};
+
+export const decrypt = (hash: string): string => {
+  const [ivPart, encryptedPart] = hash.split(':');
+  const ivBuffer = Buffer.from(ivPart, 'hex');
+  const encryptedText = Buffer.from(encryptedPart, 'hex');
+  const decipher = crypto.createDecipheriv(algorithm, secretKey, ivBuffer);
+  const decrypted = Buffer.concat([decipher.update(encryptedText), decipher.final()]);
+  return decrypted.toString();
+};

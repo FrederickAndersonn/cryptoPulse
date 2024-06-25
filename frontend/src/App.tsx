@@ -11,6 +11,7 @@ import WalletDetails from './components/WalletDetails';
 import Posts from './components/Posts';import SendFundsForm from './components/SendFunds';
 import UserDetails from './pages/UserDetailsPage';
 import PostDetails from './components/PostDetails';
+import HomePage from './components/HomePage';
 function App() {
   return (
     <ChakraProvider theme={theme}>
@@ -18,6 +19,7 @@ function App() {
         <Box bg="gray.100" minHeight="100vh">
           <Navbar />
           <Routes>
+          <Route path="/" element={<HomePage />} />
             <Route path="/coins" element={<CoinsPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />

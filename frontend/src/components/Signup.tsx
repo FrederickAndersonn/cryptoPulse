@@ -24,7 +24,7 @@ const Signup: React.FC = () => {
   const [error, setError] = useState<string | null>(null); // State for signup error
   const [isLoading, setIsLoading] = useState(false); // Loading state for signup process
   const navigate = useNavigate();
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
 
   const handleSignup = async () => {

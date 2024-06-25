@@ -25,6 +25,8 @@ import {
   FaMoneyCheckAlt,
 } from "react-icons/fa";
 
+import logo from "../assets/small_logo.png";
+
 const Navbar: React.FC = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -92,7 +94,7 @@ const Navbar: React.FC = () => {
               }}
               p={2}
             >
-              <FaHome color={"white"} />
+              <img src={logo} alt="Logo" style={{ width: "50px", height: "50px" }} />
               <Box as="span" ml={2} fontSize="lg">
                 Home
               </Box>

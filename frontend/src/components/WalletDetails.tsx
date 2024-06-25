@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import {
   Flex,
@@ -37,7 +36,7 @@ const WalletDetails: React.FC = () => {
     transactions: [],
   });
 
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
 
   const navigate = useNavigate(); // Use useNavigate instead of useHistory

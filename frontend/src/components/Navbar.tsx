@@ -22,6 +22,7 @@ import {
   FaForumbee,
   FaMoneyCheckAlt,
   FaExchangeAlt,
+  FaNewspaper,
 } from "react-icons/fa";
 
 import logo from "../assets/small_logo.png";
@@ -161,11 +162,14 @@ const Navbar: React.FC = () => {
                 Transfer
               </Box>
             </Link>
+
+            {/* Converter Link */}
             <Link
               as={RouterLink}
               to="/cryptoconverter"
               display="flex"
               alignItems="center"
+              mr={4}
               _hover={{
                 textDecoration: "none",
                 bg: "teal.600",
@@ -177,6 +181,27 @@ const Navbar: React.FC = () => {
               <FaExchangeAlt color={"white"} />
               <Box as="span" ml={2} fontSize="lg">
                 Converter
+              </Box>
+            </Link>
+
+            {/* News Link */}
+            <Link
+              as={RouterLink}
+              to="/news"
+              display="flex"
+              alignItems="center"
+              mr={4}
+              _hover={{
+                textDecoration: "none",
+                bg: "teal.600",
+                borderRadius: "md",
+                color: "black",
+              }}
+              p={2}
+            >
+              <FaNewspaper color={"white"} />
+              <Box as="span" ml={2} fontSize="lg">
+                News
               </Box>
             </Link>
           </Flex>
@@ -332,6 +357,8 @@ const Navbar: React.FC = () => {
               >
                 Transfer
               </Link>
+
+              {/* Converter Link */}
               <Link
                 as={RouterLink}
                 to="/cryptoconverter"
@@ -343,6 +370,20 @@ const Navbar: React.FC = () => {
               >
                 Converter
               </Link>
+
+              {/* News Link */}
+              <Link
+                as={RouterLink}
+                to="/news"
+                color={"white"}
+                display="block"
+                py={2}
+                onClick={onClose}
+                _hover={{ bg: "teal.600", borderRadius: "md", color: "black" }}
+              >
+                News
+              </Link>
+
               {/* Conditional rendering of Login/Logout link in Drawer */}
               {isLoggedIn ? (
                 <Link

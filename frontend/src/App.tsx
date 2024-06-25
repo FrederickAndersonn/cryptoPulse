@@ -15,6 +15,7 @@ import HomePage from './components/HomePage';
 import WatchlistPage from './pages/WatchlistPage';
 
 import CryptoConverterPage from './pages/CryptoConverterPage';
+import NewsFeed from './components/NewsFeed';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
             <Route path="/userdetails" element={<UserDetails />} />
             <Route path="/post/:id" element={<PostDetails />} />
             <Route path="/watchlist" element={<WatchlistPage />} />
+            <Route path="/news" element={<NewsFeed />} />
 
             <Route path="/cryptoconverter" element={<CryptoConverterPage />} />
           </Routes>

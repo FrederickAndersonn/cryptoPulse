@@ -17,10 +17,8 @@ import { Link as RouterLink } from "react-router-dom";
 import {
   FaMoon,
   FaSun,
-  FaHome,
   FaCoins,
   FaBars,
-  FaPenFancy,
   FaForumbee,
   FaMoneyCheckAlt,
   FaExchangeAlt,
@@ -119,27 +117,6 @@ const Navbar: React.FC = () => {
               <FaCoins color={"white"} />
               <Box as="span" ml={2} fontSize="lg">
                 Coins
-              </Box>
-            </Link>
-
-            {/* Create Post Link */}
-            <Link
-              as={RouterLink}
-              to="/create-post"
-              display="flex"
-              alignItems="center"
-              mr={4}
-              _hover={{
-                textDecoration: "none",
-                bg: "teal.600",
-                borderRadius: "md",
-                color: "black",
-              }}
-              p={2}
-            >
-              <FaPenFancy color={"white"} />
-              <Box as="span" ml={2} fontSize="lg">
-                Create Post
               </Box>
             </Link>
 
@@ -328,19 +305,6 @@ const Navbar: React.FC = () => {
                 _hover={{ bg: "teal.600", borderRadius: "md", color: "black" }}
               >
                 Coins
-              </Link>
-
-              {/* Create Post Link */}
-              <Link
-                as={RouterLink}
-                to="/create-post"
-                color={"white"}
-                display="block"
-                py={2}
-                onClick={onClose}
-                _hover={{ bg: "teal.600", borderRadius: "md", color: "black" }}
-              >
-                Create Post
               </Link>
 
               {/* Forum Link */}

@@ -149,6 +149,11 @@ const Forum: React.FC = () => {
       <Heading as="h1" mb={4} textAlign="center" color={textColor}>
         Forum
       </Heading>
+      <Flex justifyContent="center" mb={4}>
+        <Button onClick={() => navigate('/create-post')} colorScheme="teal">
+          Create Post
+        </Button>
+      </Flex>
       <Box mb={4}>
         <Input
           placeholder="Search posts..."

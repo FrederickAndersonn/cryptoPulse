@@ -1,5 +1,6 @@
 stages:
-  - lint
+  - build
+  - analyze
   - test
 
 variables:
@@ -22,14 +23,31 @@ cache:
   paths:
     - backend/node_modules/
 
+build-job-backend:
+  stage: build
+  image: docker:latest
+  services:
+    - name: docker:latest
+      alias: docker
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - echo "Compiling the code for Backend..."
+    - cd backend
+    - docker build -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}" .
+    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+    - echo "Compile complete for Backend."
+
 lint-job-backend:
-  stage: lint
+  stage: analyze
   script:
     - echo "Linting backend code..."
     - npm run lint
+    - echo "linting complete for Backend."
 
 unit-test-job-backend:
   stage: test
   script:
     - echo "Running backend unit tests..."
     - npm test
+    - echo "unit test complete for Backend."

@@ -1,0 +1,33 @@
+stages:
+  - lint
+  - test
+
+variables:
+  NODE_ENV: 'test'
+  NODE_VERSION: '20.12.2'
+
+before_script:
+  - echo "Installing Node.js $NODE_VERSION"
+  - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+  - apt-get install -y nodejs
+  - node -v
+  - npm -v
+  - cd backend
+  - npm install
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - backend/node_modules/
+
+lint-job-backend:
+  stage: lint
+  script:
+    - echo "Linting backend code..."
+    - npm run lint
+
+unit-test-job-backend:
+  stage: test
+  script:
+    - echo "Running backend unit tests..."
+    - npm test

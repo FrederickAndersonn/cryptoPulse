@@ -7,6 +7,8 @@ variables:
   NODE_VERSION: '20.12.2'
 
 before_script:
+  - echo "Installing required packages"
+  - apt-get update && apt-get install -y curl
   - echo "Installing Node.js $NODE_VERSION"
   - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
   - apt-get install -y nodejs

@@ -217,7 +217,8 @@
   "scripts": {
     "test": "jest",
     "start": "ts-node server.ts",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

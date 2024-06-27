@@ -33,8 +33,7 @@ build-job-backend:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - echo "Compiling the code for Backend..."
-    - docker build -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}" .
-    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+    - docker build -t cryptopulse-backend .
     - echo "Compile complete for Backend."
 
 lint-job-backend:

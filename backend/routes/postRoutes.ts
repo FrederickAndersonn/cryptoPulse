@@ -1,17 +1,23 @@
 import express, { Request, Response } from 'express';
 import { Types } from 'mongoose';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 const router = express.Router();
 import User from '../models/user';
 import Post from '../models/post';
-import Comment from '../models/comment';
+// Removed unused import 'Comment'
+
+interface DecodedToken extends JwtPayload {
+  user: {
+    id: string;
+  };
+}
 
 // Helper function to extract user ID from JWT token
 const getUserIdFromToken = (req: Request): string | null => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) return null;
   try {
-    const decoded: any = jwt.verify(token, 'my secret token'); // Use your JWT secret
+    const decoded = jwt.verify(token, 'my secret token') as DecodedToken; // Use your JWT secret
     return decoded.user.id;
   } catch (err) {
     return null;
@@ -190,8 +196,10 @@ router.post('/posts/:postId/vote', async (req: Request, res: Response) => {
 
     await post.save();
     res.json(post);
-  } catch (err: any) {
-    console.error(err.message);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    }
     res.status(500).send('Server Error');
   }
 });

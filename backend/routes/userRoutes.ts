@@ -4,10 +4,10 @@ import { check, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import { encrypt } from '../utils/encryption';
+import StellarSdk from 'stellar-sdk'; // Replaced require with import
 
 const router = express.Router();
 const jwtSecret = "my secret token";
-const StellarSdk = require('stellar-sdk');
 
 // Function to fund newly created Stellar account with initial balance
 const fundAccount = async (publicKey: string) => {
@@ -39,7 +39,7 @@ router.post(
 
     try {
       // Check if user exists
-      let existingUser = await User.findOne({ email });
+      const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
       }
@@ -87,8 +87,8 @@ router.post(
           }
         }
       );
-    } catch (err: any) {
-      console.error(err.message);
+    } catch (err) {
+      console.error(err);
       res.status(500).send('Server Error');
     }
   }

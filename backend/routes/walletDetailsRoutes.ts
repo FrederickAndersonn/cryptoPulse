@@ -1,8 +1,9 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-const { Horizon, Keypair, StellarSdk, TransactionBuilder, BASE_FEE, Networks, Asset, Operation, Memo } = require('@stellar/stellar-sdk');
+import StellarSdk from 'stellar-sdk';
+import { Horizon, Keypair, TransactionBuilder, BASE_FEE, Networks, Asset, Operation, Memo } from 'stellar-sdk';
 import User from '../models/user';
-import { decrypt, encrypt } from '../utils/encryption'; 
+import { decrypt } from '../utils/encryption'; 
 
 const router = express.Router();
 const jwtSecret = "my secret token";
@@ -35,7 +36,7 @@ router.get('/details', authMiddleware, async (req: express.Request, res: express
     }
 
     const account = await server.loadAccount(user.publicKey);
-    const balance = account.balances.find((bal: any) => bal.asset_type === 'native');
+    const balance = account.balances.find((bal) => bal.asset_type === 'native');
     const walletDetails = {
       balance: balance ? balance.balance : '0',
       publicKey: user.publicKey,
@@ -55,7 +56,7 @@ export async function sendFunds(destinationID: string, encryptedSecretKey: strin
     let transaction;
     
     await server.loadAccount(destinationID)
-      .catch(function (error: any) {
+      .catch(function (error ) {
         if (error instanceof StellarSdk.NotFoundError) {
           throw new Error("The destination account does not exist!");
         } else return error;
@@ -87,11 +88,11 @@ export async function sendFunds(destinationID: string, encryptedSecretKey: strin
 
         return result;
       })
-      .then(function (result: any) {
+      .then(function (result) {
         console.log("Success! Results:", result);
         return result;
       })
-      .catch(function (error: any) {
+      .catch(function (error) {
         console.error("Something went wrong!", error);
         throw error;
       });

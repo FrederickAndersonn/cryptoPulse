@@ -4,13 +4,19 @@ const router = express.Router();
 import User from '../models/user';
 import Comment from '../models/comment';
 import Post from '../models/post';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+
+interface DecodedToken extends JwtPayload {
+  user: {
+    id: string;
+  };
+}
 
 const getUserIdFromToken = (req: Request): string | null => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) return null;
   try {
-    const decoded: any = jwt.verify(token, 'my secret token'); // Use your JWT secret
+    const decoded = jwt.verify(token, 'my secret token') as DecodedToken; // Use your JWT secret
     return decoded.user.id;
   } catch (err) {
     return null;
@@ -48,7 +54,7 @@ router.post('/create', async (req: Request, res: Response) => {
     await post.save();
 
     res.status(200).send("Comment created and linked to user and post");
-  } catch (err) {
+  } catch (err: unknown) {
     console.log(err);
     res.status(500).send(err);
   }
@@ -63,7 +69,7 @@ router.get('/getcomments', async (req: Request, res: Response) => {
       return;
     }
     res.status(200).send(post.comments);
-  } catch (err) {
+  } catch (err: unknown) {
     console.log(err);
     res.status(500).send(err);
   }
@@ -86,7 +92,7 @@ router.put('/editcomment', async (req: Request, res: Response) => {
     }
     await foundComment.save();
     res.status(200).send("Comment updated");
-  } catch (err) {
+  } catch (err: unknown) {
     res.status(500).send(err);
   }
 });
@@ -107,7 +113,7 @@ router.delete('/deletecomment', async (req: Request, res: Response) => {
       return;
     }
     res.status(200).send('Comment deleted');
-  } catch (err) {
+  } catch (err: unknown) {
     res.status(500).send(err);
   }
 });
@@ -141,8 +147,10 @@ router.post('/:commentId/like', async (req: Request, res: Response) => {
     }
     await comment.save();
     res.json(comment);
-  } catch (err: any) {
-    console.error(err.message);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    }
     res.status(500).send('Server Error');
   }
 });
@@ -177,8 +185,10 @@ router.post('/:commentId/unlike', async (req: Request, res: Response) => {
     }
     await comment.save();
     res.json(comment);
-  } catch (err: any) {
-    console.error(err.message);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    }
     res.status(500).send('Server Error');
   }
 });

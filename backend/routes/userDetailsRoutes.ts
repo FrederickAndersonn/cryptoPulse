@@ -14,8 +14,10 @@ router.get('/profile', auth, async (req: express.Request, res: express.Response)
       return res.status(404).json({ msg: 'User not found' });
     }
     res.json(user);
-  } catch (err: any) {
-    console.error(err.message);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    }
     res.status(500).send('Server Error');
   }
 });
@@ -52,8 +54,10 @@ router.put(
       await user.save();
 
       res.json({ msg: 'Password updated successfully' });
-    } catch (err: any) {
-      console.error(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      }
       res.status(500).send('Server Error');
     }
   }
@@ -74,8 +78,10 @@ router.put('/:id/watchlist', auth, async (req, res) => {
     } else {
       res.status(400).json({ msg: 'Coin already in watchlist' });
     }
-  } catch (error) {
-    console.error('Error adding to watchlist:', error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Error adding to watchlist:', error.message);
+    }
     res.status(500).send('Server error');
   }
 });
@@ -88,8 +94,10 @@ router.get('/:id/watchlist', auth, async (req, res) => {
       return res.status(404).json({ msg: 'User not found' });
     }
     res.json(user.watchlist);
-  } catch (error) {
-    console.error('Error fetching watchlist:', error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Error fetching watchlist:', error.message);
+    }
     res.status(500).send('Server error');
   }
 });
@@ -105,9 +113,12 @@ router.delete('/:id/watchlist/:coinId', auth, async (req, res) => {
     user.watchlist = user.watchlist.filter((id) => id !== coinId);
     await user.save();
     res.json(user.watchlist);
-  } catch (error) {
-    console.error('Error removing from watchlist:', error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Error removing from watchlist:', error.message);
+    }
     res.status(500).send('Server error');
   }
 });
+
 export default router;

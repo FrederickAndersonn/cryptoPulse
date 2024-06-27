@@ -2,10 +2,7 @@ import request from 'supertest';
 import { app, server } from '../serverTest'; // Use the test server
 import User from '../models/user';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-
-const jwtSecret = "my secret token";
 
 afterAll(async () => {
   await server.close();

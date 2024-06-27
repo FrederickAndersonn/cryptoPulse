@@ -10,7 +10,7 @@ import walletDetailsRoutes from './routes/walletDetailsRoutes';
 import postRoutes from './routes/postRoutes';
 import commentRoutes from './routes/commentRoutes';
 
-const TEST_DB_URL = "mongodb://localhost:27017/Cryptopulse_test";
+const TEST_DB_URL = "mongodb+srv://public:public@cluster0.jcpik0t.mongodb.net/cryptoPulse_Test";
 
 mongoose.connect(TEST_DB_URL, {
   useNewUrlParser: true,

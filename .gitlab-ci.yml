@@ -9,8 +9,6 @@ variables:
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: ""
 
-services:
-  - docker:dind
 
 before_script:
   - echo "Installing required packages"
@@ -31,8 +29,8 @@ cache:
 build-job-backend:
   stage: build
   image: docker:latest
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
+  services:
+    - docker:dind
   before_script:
     - docker info
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY

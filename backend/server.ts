@@ -9,7 +9,7 @@ import loginRoutes from './routes/loginRoutes';
 import walletDetailsRoutes from './routes/walletDetailsRoutes';
 import postRoutes from './routes/postRoutes';
 import commentRoutes from './routes/commentRoutes';
-
+import aiRoutes from './routes/aiRoutes';
 const mongourl = "mongodb+srv://public:public@cluster0.jcpik0t.mongodb.net/cryptoPulse";
 
 mongoose.connect(mongourl, {
@@ -32,6 +32,7 @@ app.use("/wallet", walletDetailsRoutes);
 app.use("/", postRoutes);
 app.use("/comment",commentRoutes);
 app.use("/user", userDetailsRoutes);
+app.use('/ai', aiRoutes);
 
 
 const PORT = process.env.PORT || 5001;

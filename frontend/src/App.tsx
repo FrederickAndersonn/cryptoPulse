@@ -13,6 +13,7 @@ import UserDetails from './pages/UserDetailsPage';
 import PostDetails from './components/PostDetails';
 import HomePage from './components/HomePage';
 import WatchlistPage from './pages/WatchlistPage';
+import PredictionGraph from './components/PredictionGraph';
 
 import CryptoConverterPage from './pages/CryptoConverterPage';
 import NewsFeed from './components/NewsFeed';
@@ -37,7 +38,7 @@ function App() {
             <Route path="/post/:id" element={<PostDetails />} />
             <Route path="/watchlist" element={<WatchlistPage />} />
             <Route path="/news" element={<NewsFeed />} />
-
+            <Route path="/prediction" element={<PredictionGraph />} />
             <Route path="/cryptoconverter" element={<CryptoConverterPage />} />
           </Routes>
         </Box>

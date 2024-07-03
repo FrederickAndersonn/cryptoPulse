@@ -23,6 +23,7 @@ import {
   FaMoneyCheckAlt,
   FaExchangeAlt,
   FaNewspaper,
+  FaRobot,
 } from "react-icons/fa";
 
 import logo from "../assets/small_logo.png";
@@ -202,6 +203,27 @@ const Navbar: React.FC = () => {
               <FaNewspaper color={"white"} />
               <Box as="span" ml={2} fontSize="lg">
                 News
+              </Box>
+            </Link>
+
+              {/* AI Prediction Link */}
+              <Link
+              as={RouterLink}
+              to="/prediction"
+              display="flex"
+              alignItems="center"
+              mr={4}
+              _hover={{
+                textDecoration: "none",
+                bg: "teal.600",
+                borderRadius: "md",
+                color: "black",
+              }}
+              p={2}
+            >
+              <FaRobot color={"white"} />
+              <Box as="span" ml={2} fontSize="lg">
+                AI
               </Box>
             </Link>
           </Flex>
@@ -384,6 +406,18 @@ const Navbar: React.FC = () => {
                 News
               </Link>
 
+              {/* AI Prediction Link */}
+            <Link
+              as={RouterLink}
+              to="/prediction"
+              color={"white"}
+              display="block"
+              py={2}
+              onClick={onClose}
+              _hover={{ bg: "teal.600", borderRadius: "md", color: "black" }}
+            >
+              AI
+            </Link>
               {/* Conditional rendering of Login/Logout link in Drawer */}
               {isLoggedIn ? (
                 <Link

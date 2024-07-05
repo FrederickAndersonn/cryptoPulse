@@ -14,19 +14,13 @@ import {
   FormLabel,
 } from '@chakra-ui/react';
 
-interface Crypto {
-  id: string;
-  symbol: string;
-  name: string;
-}
-
-const CryptoConverter: React.FC = () => {
+const CryptoConverter = () => {
   const [amount, setAmount] = useState<string>('');
-  const [fromCurrency, setFromCurrency] = useState<string>('USD');
-  const [toCurrency, setToCurrency] = useState<string>('bitcoin');
-  const [result, setResult] = useState<string>('');
-  const [cryptoList, setCryptoList] = useState<Crypto[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [fromCurrency, setFromCurrency] = useState('USD');
+  const [toCurrency, setToCurrency] = useState('bitcoin');
+  const [result, setResult] = useState('');
+  const [cryptoList, setCryptoList] = useState<{ id: string; symbol: string; name: string }[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCryptoList = async () => {
@@ -39,7 +33,7 @@ const CryptoConverter: React.FC = () => {
             page: 1,
           },
         });
-        setCryptoList(response.data.map((coin: Crypto) => ({
+        setCryptoList(response.data.map((coin: { id: string; symbol: string; name: string }) => ({
           id: coin.id,
           symbol: coin.symbol,
           name: coin.name,
@@ -158,7 +152,7 @@ const CryptoConverter: React.FC = () => {
           >
             Convert
           </Button>
-          {result && <Text mt={4} fontSize="lg">{result}</Text>}
+          {result && <Text mt={4} fontSize="lg" >{result}</Text>}
         </VStack>
       </Box>
     </Box>

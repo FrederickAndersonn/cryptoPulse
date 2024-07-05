@@ -119,7 +119,11 @@ export const predict = async (req: Request, res: Response) => {
   
       const predictions = await predictFutureClose(lastSeq, model, scaler_X, scaler_y, daysToPredict);
       res.json({ predictions });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(500).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'An unknown error occurred' });
+      }
     }
 };

@@ -1,0 +1,37 @@
+version: 1
+backend:
+  phases:
+    preBuild:
+      commands:
+        - echo "Starting backend build..."
+        - cd backend
+        - npm install
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: backend
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - backend/node_modules/**/*
+
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "Starting frontend build..."
+        - cd ..
+        - cd frontend
+        - npm install
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: frontend/build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - frontend/node_modules/**/*

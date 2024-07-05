@@ -7,6 +7,7 @@ lint-job-backend:
   script:
     - echo "Linting backend code..."
     - cd backend
+    - npm install
     - npm run lint
     - echo "Linting complete for Backend."
 
@@ -15,5 +16,6 @@ unit-test-job-backend:
   script:
     - echo "Running backend unit tests..."
     - cd backend
+    - npm install
     - npm test
     - echo "Unit test complete for Backend."

@@ -13,7 +13,6 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
-import axios from "axios";
 
 const SendFundsForm: React.FC = () => {
   const location = useLocation();
@@ -42,12 +41,6 @@ const SendFundsForm: React.FC = () => {
         navigate('/login');
         return;
       }
-
-      const response = await axios.post(
-        "http://localhost:5001/wallet/sendfunds",
-        { destinationID, amount, memo },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
 
       toast({
         title: "Success",

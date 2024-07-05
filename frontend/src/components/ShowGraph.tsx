@@ -41,7 +41,6 @@ const ShowGraph: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
-  const [chartInterval, setChartInterval] = useState<string>('all'); // State for chart interval selection
 
   useEffect(() => {
     if (id) {
@@ -57,31 +56,34 @@ const ShowGraph: React.FC = () => {
     }
   }, [id]);
 
-  // Function to filter chart data based on selected interval
-  const filterChartData = (data: GraphData[], interval: string): GraphData[] => {
-    const today = new Date();
-    switch (interval) {
-      case '1w':
-        const oneWeekAgo = new Date(today);
-        oneWeekAgo.setDate(today.getDate() - 7);
-        return data.filter(item => new Date(item.Date) >= oneWeekAgo);
-      case '1m':
-        const oneMonthAgo = new Date(today);
-        oneMonthAgo.setMonth(today.getMonth() - 1);
-        return data.filter(item => new Date(item.Date) >= oneMonthAgo);
-      case '1y':
-        const oneYearAgo = new Date(today);
-        oneYearAgo.setFullYear(today.getFullYear() - 1);
-        return data.filter(item => new Date(item.Date) >= oneYearAgo);
-      case 'all':
-      default:
-        return data;
+// Function to filter chart data based on selected interval
+const filterChartData = (data: GraphData[], interval: string): GraphData[] => {
+  const today = new Date();
+  switch (interval) {
+    case '1w': {
+      const oneWeekAgo = new Date(today);
+      oneWeekAgo.setDate(today.getDate() - 7);
+      return data.filter(item => new Date(item.Date) >= oneWeekAgo);
     }
-  };
+    case '1m': {
+      const oneMonthAgo = new Date(today);
+      oneMonthAgo.setMonth(today.getMonth() - 1);
+      return data.filter(item => new Date(item.Date) >= oneMonthAgo);
+    }
+    case '1y': {
+      const oneYearAgo = new Date(today);
+      oneYearAgo.setFullYear(today.getFullYear() - 1);
+      return data.filter(item => new Date(item.Date) >= oneYearAgo);
+    }
+    case 'all':
+    default:
+      return data;
+  }
+};
+
 
   // Handler for interval change
   const handleIntervalChange = (interval: string) => {
-    setChartInterval(interval);
     const filteredData = filterChartData(originalChartData, interval);
     setChartData(filteredData);
   };

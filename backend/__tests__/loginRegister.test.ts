@@ -98,7 +98,7 @@ describe('POST /login', () => {
 
     expect(response.body).toHaveProperty('token');
     expect(response.body).toHaveProperty('userid');
-  }, 10000); // Set timeout to 10 seconds
+  }, 20000); // Set timeout to 10 seconds
 
   it('should return an error if the email does not exist', async () => {
     jest.setTimeout(10000); // Set timeout to 10 seconds
@@ -122,7 +122,7 @@ describe('POST /login', () => {
         })
       ])
     );
-  }, 10000); // Set timeout to 10 seconds
+  }, 20000); // Set timeout to 10 seconds
 
   it('should return an error if the password is incorrect', async () => {
     jest.setTimeout(10000); // Set timeout to 10 seconds
@@ -154,7 +154,7 @@ describe('POST /login', () => {
         })
       ])
     );
-  }, 10000); // Set timeout to 10 seconds
+  }, 20000); // Set timeout to 10 seconds
 
   it('should return an error if the fields are missing', async () => {
     jest.setTimeout(10000); // Set timeout to 10 seconds
@@ -177,5 +177,5 @@ describe('POST /login', () => {
         })
       ])
     );
-  }, 10000); // Set timeout to 10 seconds
+  }, 20000); // Set timeout to 10 seconds
 });

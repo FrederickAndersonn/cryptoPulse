@@ -68,36 +68,44 @@ class MinMaxScaler {
   
   loadModel();
   
-  const predictNext7DaysClose = async (lastSeq: number[], model: tf.LayersModel, scaler_X: MinMaxScaler, scaler_y: MinMaxScaler): Promise<number[]> => {
-    let futurePrices: number[] = [];
+  const predictNext7DaysClose = async (
+    lastSeq: number[], 
+    model: tf.LayersModel, 
+    scaler_X: MinMaxScaler, 
+    scaler_y: MinMaxScaler
+  ): Promise<number[]> => {
+    const futurePrices: number[] = [];
     let currentSeq = tf.tensor(lastSeq).reshape([1, lastSeq.length]);
   
     for (let i = 0; i < 7; i++) {
-      const currentSeqArray = currentSeq.arraySync();
+      const currentSeqArray: number[][] = currentSeq.arraySync() as number[][];
       if (!Array.isArray(currentSeqArray) || !Array.isArray(currentSeqArray[0])) {
         throw new Error('Unexpected tensor shape');
       }
   
-      const currentSeqScaled = scaler_X.transform(currentSeqArray[0] as any);
+      const currentSeqScaled = scaler_X.transform(currentSeqArray[0]);
       const currentSeqTensor = tf.tensor(currentSeqScaled).reshape([1, currentSeqScaled.length, 1]);
       const predictedCloseScaled = model.predict(currentSeqTensor) as tf.Tensor;
-      const predictedCloseArray = predictedCloseScaled.arraySync();
-      if (!Array.isArray(predictedCloseArray) || !Array.isArray(predictedCloseArray[0])) {
+      const predictedCloseArray: number[][] | undefined = predictedCloseScaled.arraySync() as number[][];
+  
+      if (!predictedCloseArray || !Array.isArray(predictedCloseArray[0])) {
         throw new Error('Unexpected tensor shape');
       }
   
-      const predictedClose = scaler_y.inverseTransform(predictedCloseArray[0] as any)[0];
+      const predictedClose = scaler_y.inverseTransform(predictedCloseArray[0])[0];
       futurePrices.push(predictedClose);
   
       // Remove the first element and append the predicted close price
       currentSeq = tf.tidy(() => {
-        const shiftedSeq = currentSeq.slice([0, 1], [-1, currentSeq.shape[1] as any - 1]);
+        const shiftedSeq = currentSeq.slice([0, 1], [-1, (currentSeq.shape[1] ?? 0) - 1]);
         return shiftedSeq.concat(tf.tensor([predictedClose]).reshape([1, 1]), 1);
       });
     }
   
     return futurePrices;
   };
+  
+  
   
   export const predict = async (req: Request, res: Response) => {
     try {
@@ -113,7 +121,7 @@ class MinMaxScaler {
   
       const predictions = await predictNext7DaysClose(lastSeq, model, scaler_X, scaler_y);
       res.json({ predictions });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+    } catch (error) {
+      res.status(500).json({ error});
     }
   };

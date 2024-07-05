@@ -3,13 +3,12 @@ import * as tf from '@tensorflow/tfjs-node';
 import * as path from 'path';
 import yahooFinance from 'yahoo-finance2';
 
-
 export const formatDateToStartOfDay = (date: Date): string => {
     date.setUTCHours(0, 0, 0, 0);
     return date.toISOString().split('T')[0];
-  };
+};
   
-  export const fetchLastSequence = async (ticker: string, numDays: number): Promise<number[]> => {
+export const fetchLastSequence = async (ticker: string, numDays: number): Promise<number[]> => {
     const period1 = formatDateToStartOfDay(new Date(Date.now() - numDays * 24 * 60 * 60 * 1000));
     const period2 = formatDateToStartOfDay(new Date()); // Fetch data until today
     const queryOptions = { period1, period2, interval: '1d' as const }; // Fetch daily data
@@ -22,7 +21,7 @@ export const formatDateToStartOfDay = (date: Date): string => {
   
     const closingPrices = result.slice(-numDays).map(data => data.close);
     return closingPrices;
-  };
+};
 
 class MinMaxScaler {
     private min: number | null;
@@ -51,12 +50,11 @@ class MinMaxScaler {
       }
       return data.map(value => value * (this.max! - this.min!) + this.min!);
     }
-  }
-  
+}
 
-  let model: tf.LayersModel;
+let model: tf.LayersModel;
 
-  const loadModel = async () => {
+const loadModel = async () => {
     try {
       const modelPath = path.join(__dirname, '../tfjs_model/model.json');
       model = await tf.loadLayersModel(`file://${modelPath}`);
@@ -64,20 +62,21 @@ class MinMaxScaler {
     } catch (error) {
       console.error('Error loading model:', error);
     }
-  };
+};
   
-  loadModel();
+loadModel();
   
-  const predictNext7DaysClose = async (
+const predictFutureClose = async (
     lastSeq: number[], 
     model: tf.LayersModel, 
     scaler_X: MinMaxScaler, 
-    scaler_y: MinMaxScaler
-  ): Promise<number[]> => {
+    scaler_y: MinMaxScaler,
+    daysToPredict: number
+): Promise<number[]> => {
     const futurePrices: number[] = [];
     let currentSeq = tf.tensor(lastSeq).reshape([1, lastSeq.length]);
   
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < daysToPredict; i++) {
       const currentSeqArray: number[][] = currentSeq.arraySync() as number[][];
       if (!Array.isArray(currentSeqArray) || !Array.isArray(currentSeqArray[0])) {
         throw new Error('Unexpected tensor shape');
@@ -103,14 +102,13 @@ class MinMaxScaler {
     }
   
     return futurePrices;
-  };
+};
   
-  
-  
-  export const predict = async (req: Request, res: Response) => {
+export const predict = async (req: Request, res: Response) => {
     try {
       const ticker = req.query.ticker as string || 'BTC-USD'; 
       const numDays = parseInt(req.query.numDays as string, 10) || 10; 
+      const daysToPredict = parseInt(req.query.daysToPredict as string, 10) || 7; // Default to 7 days
   
       const lastSeq = await fetchLastSequence(ticker, numDays);
   
@@ -119,9 +117,9 @@ class MinMaxScaler {
       scaler_X.fit(lastSeq);
       const scaler_y = scaler_X; // Assuming using the same scaler for X and y as an example
   
-      const predictions = await predictNext7DaysClose(lastSeq, model, scaler_X, scaler_y);
+      const predictions = await predictFutureClose(lastSeq, model, scaler_X, scaler_y, daysToPredict);
       res.json({ predictions });
-    } catch (error) {
-      res.status(500).json({ error});
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
     }
-  };
+};

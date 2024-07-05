@@ -7,7 +7,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts';
-import { Box, Center, Heading, Text, useColorMode } from '@chakra-ui/react';
+import { Box, Center, Heading, Text, useColorMode, ButtonGroup, Button } from '@chakra-ui/react';
 import { fetchPredictions } from '../actions/predictionResult'; // Adjust the path as needed
 
 interface GraphData {
@@ -23,38 +23,41 @@ const fetchCurrentBitcoinPrice = async () => {
 
 const PredictionGraph: React.FC = () => {
   const [chartData, setChartData] = useState<GraphData[]>([]);
-  const [originalChartData, setOriginalChartData] = useState<GraphData[]>([]);
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
   const [growthPercentage, setGrowthPercentage] = useState<number | null>(null);
+  const [predictionDays, setPredictionDays] = useState<number>(7);
+  const [lastDayPrice, setLastDayPrice] = useState<number | null>(null);
 
-  useEffect(() => {
+  const fetchData = async (daysToPredict: number) => {
     const ticker = 'BTC-USD';
     const numDays = 10;
 
-    fetchPredictions(ticker, numDays)
-      .then(prediction => {
-        console.log('Prediction from backend:', prediction);
-        const predictionData = prediction.predictions.map((price: number, index: number) => ({
-          Date: `Day ${index + 1}`,
-          Price: price
-        }));
-        setChartData(predictionData);
-        setOriginalChartData(predictionData); // Store original data
-      })
-      .catch(error => {
-        console.error('Error fetching graph data:', error);
-      });
+    try {
+      const prediction = await fetchPredictions(ticker, numDays, daysToPredict);
+      console.log('Prediction from backend:', prediction);
+      const predictionData = prediction.predictions.map((price: number, index: number) => ({
+        Date: `Day ${index + 1}`,
+        Price: price
+      }));
+      setChartData(predictionData);
+      setLastDayPrice(predictionData[predictionData.length - 1].Price);
+    } catch (error) {
+      console.error('Error fetching graph data:', error);
+    }
 
-    fetchCurrentBitcoinPrice()
-      .then(price => {
-        setCurrentPrice(price);
-      })
-      .catch(error => {
-        console.error('Error fetching current Bitcoin price:', error);
-      });
-  }, []);
+    try {
+      const price = await fetchCurrentBitcoinPrice();
+      setCurrentPrice(price);
+    } catch (error) {
+      console.error('Error fetching current Bitcoin price:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(predictionDays);
+  }, [predictionDays]);
 
   useEffect(() => {
     if (chartData.length > 0 && currentPrice !== null) {
@@ -67,6 +70,10 @@ const PredictionGraph: React.FC = () => {
   const prices = chartData.map((point) => point.Price);
   const minPrice = Math.floor(Math.min(...prices));
   const maxPrice = Math.ceil(Math.max(...prices));
+
+  const handlePredictionDaysChange = (days: number) => {
+    setPredictionDays(days);
+  };
 
   return (
     <Box minHeight="100vh" bg={isDark ? 'gray.900' : 'gray.100'}>
@@ -82,6 +89,18 @@ const PredictionGraph: React.FC = () => {
             {growthPercentage >= 0 ? `Growth 🚀: ${growthPercentage.toFixed(2)}%` : `Decline 📉: ${growthPercentage.toFixed(2)}%`}
           </Text>
         )}
+        {lastDayPrice !== null && (
+          <Text fontSize="lg" mb={4}>
+            Predicted price for day {predictionDays}: ${lastDayPrice.toFixed(2)}
+          </Text>
+        )}
+        <Center mb={4}>
+          <ButtonGroup variant="outline" spacing="4">
+            <Button onClick={() => handlePredictionDaysChange(7)}>1 W</Button>
+            <Button onClick={() => handlePredictionDaysChange(14)}>2 W</Button>
+            <Button onClick={() => handlePredictionDaysChange(21)}>3 W</Button>
+          </ButtonGroup>
+        </Center>
         <Center mb={4}>
           {chartData.length > 0 && (
             <AreaChart

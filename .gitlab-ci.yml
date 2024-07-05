@@ -6,6 +6,7 @@ lint-job-backend:
   stage: analyze
   script:
     - echo "Linting backend code..."
+    - cd backend
     - npm run lint
     - echo "Linting complete for Backend."
 
@@ -13,5 +14,6 @@ unit-test-job-backend:
   stage: test
   script:
     - echo "Running backend unit tests..."
+    - cd backend
     - npm test
     - echo "Unit test complete for Backend."

@@ -3,43 +3,6 @@ stages:
   - analyze
   - test
 
-variables:
-  NODE_ENV: 'test'
-  NODE_VERSION: '20.12.2'
-  DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ""
-
-
-before_script:
-  - echo "Installing required packages"
-  - apt-get update && apt-get install -y curl
-  - echo "Installing Node.js $NODE_VERSION"
-  - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-  - apt-get install -y nodejs
-  - node -v
-  - npm -v
-  - cd backend
-  - npm install
-
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - backend/node_modules/
-
-build-job-backend:
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  before_script:
-    - docker info
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - echo "Compiling the code for Backend..."
-    - docker build -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}" .
-    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
-    - echo "Compile complete for Backend."
-
 lint-job-backend:
   stage: analyze
   image: node:20.12.2

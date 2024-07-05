@@ -1,11 +1,9 @@
 stages:
-  - build
   - analyze
   - test
 
 lint-job-backend:
   stage: analyze
-  image: node:20.12.2
   script:
     - echo "Linting backend code..."
     - npm run lint
@@ -13,7 +11,6 @@ lint-job-backend:
 
 unit-test-job-backend:
   stage: test
-  image: node:20.12.2
   script:
     - echo "Running backend unit tests..."
     - npm test

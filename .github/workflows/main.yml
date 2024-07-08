@@ -23,11 +23,9 @@ jobs:
 
       - name: Install Backend Dependencies
         working-directory: backend
-        run: npm install
-
-      - name: Build Backend
-        working-directory: backend
-        run: npm run build
+        run: |
+          npm install
+          npm run build
 
   frontend_build:
     name: Build Frontend
@@ -43,16 +41,14 @@ jobs:
 
       - name: Install Frontend Dependencies
         working-directory: frontend
-        run: npm install
+        run: |
+          npm install
+          npm run build
 
-      - name: Build Frontend
-        working-directory: frontend
-        run: npm run build
-
-  analyze:
-    name: Analyze (Lint) Backend and Frontend
+  backend_lint:
+    name: Backend Lint
     runs-on: ubuntu-latest
-    needs: [backend_build, frontend_build]
+    needs: backend_build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -61,26 +57,42 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
+
+      - name: Install Backend Dependencies
+        working-directory: backend
+        run: npm install
 
       # Backend linting
       - name: Backend lint
         working-directory: backend
         run: npm run lint
 
+  frontend_lint:
+    name: Frontend Lint
+    runs-on: ubuntu-latest
+    needs: frontend_build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Set up Node.js for Frontend
         uses: actions/setup-node@v2
         with:
           node-version: '16'
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm install
 
       # Frontend linting
       - name: Frontend lint
         working-directory: frontend
         run: npm run lint
 
-  test:
-    name: Test Backend and Frontend
+  backend_test:
+    name: Backend Tests
     runs-on: ubuntu-latest
-    needs: analyze
+    needs: backend_lint
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -90,17 +102,35 @@ jobs:
         with:
           node-version: '16'
 
+      - name: Install Backend Dependencies
+        working-directory: backend
+        run: npm install
+
       # Backend tests
       - name: Backend test
         working-directory: backend
         run: npm run test
+
+  frontend_test:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    needs: frontend_lint
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Set up Node.js for Frontend
         uses: actions/setup-node@v2
         with:
           node-version: '16'
 
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm install
+
       # Frontend tests with Cypress
       - name: Frontend tests with Cypress
         working-directory: frontend
-        run: npm install && npx cypress run
+        run: |
+          npm install
+          npx cypress run

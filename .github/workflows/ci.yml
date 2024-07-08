@@ -1,97 +1,48 @@
-name: CI
+name: Software Development CI Pipeline
 
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
-  analyze-backend:
+  backend_tests:
+    name: Backend Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      - name: Verify directory contents
-        run: ls -la
-        working-directory: backend  # Adjust if needed
-
-      - name: Install backend dependencies
-        run: npm install
+      - name: Backend lint and test
         working-directory: backend
-
-      - name: Lint backend code
-        run: |
-          # Ensure ESLint is installed globally or locally in backend directory
-          npm install eslint
-          npx eslint .
-        working-directory: backend
-
-  test-backend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install backend dependencies
-        run: npm install
-        working-directory: backend
-
-      - name: Run backend unit tests
-        run: npm test
-        working-directory: backend
-
-  test-frontend:
-    runs-on: ubuntu-latest
-    needs: test-backend
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install frontend dependencies and Cypress
         run: |
           npm install
-          npm install cypress
-        working-directory: frontend  # Adjust if needed
+          npm run lint -- --ignore-path .gitignore --ignore dist
+          npm run test
 
-      - name: Build frontend (if required)
-        run: npm run build
-        working-directory: frontend
+  frontend_tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Run Cypress tests in frontend
-        run: npm run cypress:run
-        env:
-          CYPRESS_baseUrl: http://localhost:5173
-        continue-on-error: true
-
-      - name: Exclude dist directory from frontend test results
-        if: always()
-        run: |
-          echo "##[add-matcher]dist-report.json"
-          echo '{"pattern": "dist/**/*", "severity": "error", "message": "Excluded from test results"}' > dist-report.json
-
-      - name: Upload frontend test results
-        if: always()
-        uses: actions/upload-artifact@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          name: frontend-test-results
-          path: |
-            dist-report.json
+          node-version: '14'
+
+      - name: Frontend tests with Cypress
+        working-directory: frontend
+        run: |
+          npm install
+          npx run cypress run
+

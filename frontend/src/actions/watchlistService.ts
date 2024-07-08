@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5001'; // Adjust based on your backend server URL
+const API_URL = 'https://cryptopulse-n0ol.onrender.com'; // Adjust based on your backend server URL
 
 export const addToWatchlist = async (userId: string, coinId: string) => {
   try {

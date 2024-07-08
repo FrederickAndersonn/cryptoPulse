@@ -21,7 +21,7 @@ export const fetchWalletDetails = async (token: string): Promise<Partial<WalletI
   };
 
   try {
-    const response = await axios.get<Partial<WalletInfo>>('http://localhost:5001/wallet/details', config);
+    const response = await axios.get<Partial<WalletInfo>>('https://cryptopulse-n0ol.onrender.com/wallet/details', config);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -39,7 +39,7 @@ export const fetchTransactions = async (token: string): Promise<Transaction[]> =
   };
 
   try {
-    const response = await axios.get<Transaction[]>('http://localhost:5001/wallet/transactions', config);
+    const response = await axios.get<Transaction[]>('https://cryptopulse-n0ol.onrender.com/wallet/transactions', config);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {

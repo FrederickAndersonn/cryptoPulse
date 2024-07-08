@@ -35,7 +35,7 @@ const CreatePost: React.FC = () => {
       const userId = decoded.user.id;
       setAuthor((prevState) => ({ ...prevState, id: userId }));
 
-      axios.get(`http://localhost:5001/register/user/${userId}`)
+      axios.get(`https://cryptopulse-n0ol.onrender.com/register/user/${userId}`)
         .then(response => {
           setAuthor({ id: userId, username: response.data.name });
         })
@@ -66,7 +66,7 @@ const CreatePost: React.FC = () => {
     };
 
     try {
-      await axios.post('http://localhost:5001/posts', newPost, {
+      await axios.post('https://cryptopulse-n0ol.onrender.com/posts', newPost, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,

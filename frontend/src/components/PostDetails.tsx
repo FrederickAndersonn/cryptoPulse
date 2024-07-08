@@ -63,7 +63,7 @@ const PostDetails: React.FC = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:5001/posts/${id}`);
+        const response = await axios.get(`https://cryptopulse-n0ol.onrender.com/posts/${id}`);
         console.log('Fetched post:', response.data); // Log the fetched post
         setPost(response.data);
         setLoading(false);
@@ -94,7 +94,7 @@ const PostDetails: React.FC = () => {
 
     try {
       await axios.post(
-        'http://localhost:5001/comment/create',
+        'https://cryptopulse-n0ol.onrender.com/comment/create',
         { text: comment, post: { id } },
         {
           headers: {
@@ -107,7 +107,7 @@ const PostDetails: React.FC = () => {
       );
       setComment('');
       // Re-fetch post to update comments
-      const response = await axios.get(`http://localhost:5001/posts/${id}`);
+      const response = await axios.get(`https://cryptopulse-n0ol.onrender.com/posts/${id}`);
       setPost(response.data);
     } catch (error) {
       console.error('Failed to add comment:', error);
@@ -122,7 +122,7 @@ const PostDetails: React.FC = () => {
 
     try {
       await axios.post(
-        `http://localhost:5001/comment/${commentId}/like`,
+        `https://cryptopulse-n0ol.onrender.com/comment/${commentId}/like`,
         {},
         {
           headers: {
@@ -164,7 +164,7 @@ const PostDetails: React.FC = () => {
 
     try {
       await axios.post(
-        `http://localhost:5001/comment/${commentId}/unlike`,
+        `https://cryptopulse-n0ol.onrender.com/comment/${commentId}/unlike`,
         {},
         {
           headers: {

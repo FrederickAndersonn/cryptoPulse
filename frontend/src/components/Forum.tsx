@@ -44,7 +44,7 @@ const Forum: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/posts');
+        const response = await axios.get('https://cryptopulse-n0ol.onrender.com/posts');
         setPosts(response.data);
         setLoading(false);
         loadVotesFromLocalStorage(response.data);
@@ -96,7 +96,7 @@ const Forum: React.FC = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:5001/posts/${postId}/vote`,
+        `https://cryptopulse-n0ol.onrender.com/posts/${postId}/vote`,
         { vote },
         {
           headers: {

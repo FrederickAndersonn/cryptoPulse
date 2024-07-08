@@ -10,7 +10,7 @@ interface SignupResponse {
   
   export const signup = async (name: string, email: string, password: string): Promise<SignupResponse | null> => {
     try {
-      const response = await fetch('http://localhost:5001/register', {
+      const response = await fetch('https://cryptopulse-n0ol.onrender.com/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ interface SignupResponse {
   
   export const login = async (email: string, password: string): Promise<LoginResponse | null> => {
     try {
-      const response = await fetch('http://localhost:5001/login', {
+      const response = await fetch('https://cryptopulse-n0ol.onrender.com/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

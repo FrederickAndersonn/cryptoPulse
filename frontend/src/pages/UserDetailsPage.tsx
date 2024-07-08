@@ -70,7 +70,7 @@ const UserDetails: React.FC = () => {
 
   const fetchUserPosts = async (userId: string) => {
     try {
-      const response = await axios.get(`http://localhost:5001/users/${userId}/posts`);
+      const response = await axios.get(`https://cryptopulse-n0ol.onrender.com/users/${userId}/posts`);
       setUserPosts(response.data);
     } catch (error) {
       console.error('Error fetching user posts:', error);
@@ -85,7 +85,7 @@ const UserDetails: React.FC = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:5001/posts/${postId}`, {
+      await axios.delete(`https://cryptopulse-n0ol.onrender.com/posts/${postId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

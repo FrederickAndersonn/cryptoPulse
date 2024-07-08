@@ -36,7 +36,7 @@ export const fetchUserProfile = async (): Promise<UserProfile | null> => {
   }
 
   try {
-    const response = await fetch('http://localhost:5001/user/profile', {
+    const response = await fetch('https://cryptopulse-n0ol.onrender.com/user/profile', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export const updatePassword = async (currentPassword: string, newPassword: strin
   }
 
   try {
-    const response = await fetch('http://localhost:5001/user/update-password', {
+    const response = await fetch('https://cryptopulse-n0ol.onrender.com/user/update-password', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

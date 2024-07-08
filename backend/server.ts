@@ -10,6 +10,7 @@ import walletDetailsRoutes from './routes/walletDetailsRoutes';
 import postRoutes from './routes/postRoutes';
 import commentRoutes from './routes/commentRoutes';
 import aiRoutes from './routes/aiRoutes';
+
 const mongourl = "mongodb+srv://public:public@cluster0.jcpik0t.mongodb.net/cryptoPulse";
 
 mongoose.connect(mongourl, {
@@ -24,6 +25,10 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Add the simple "Hello, World!" route
+app.get('/hello', (req, res) => {
+  res.send('Hello, World!');
+});
 
 app.use(express.static(path.join(__dirname, "build")));
 app.use("/register", userRoutes);
@@ -33,7 +38,6 @@ app.use("/", postRoutes);
 app.use("/comment",commentRoutes);
 app.use("/user", userDetailsRoutes);
 app.use('/ai', aiRoutes);
-
 
 const PORT = process.env.PORT || 5001;
 const server = app.listen(PORT, () => {

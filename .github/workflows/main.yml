@@ -1,106 +1,78 @@
-name: CI
+name: Software Development CI Pipeline
 
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
-  analyze-backend:
+  build:
+    name: Build Frontend and Backend
     runs-on: ubuntu-latest
-    stage: analyze
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
 
-      - name: Install backend dependencies
-        run: |
-          cd backend
-          npm install
+      # Build Backend
+      - name: Build Backend
         working-directory: backend
+        run: npm install && npm run build
 
-      - name: Lint backend code
-        run: |
-          cd backend
-          # Run ESLint excluding dist directory
-          eslint . --ignore-pattern 'backend/dist/*'
-        working-directory: backend
+      # Build Frontend
+      - name: Build Frontend
+        working-directory: frontend
+        run: npm install && npm run build
 
-  test-backend:
+  analyze:
+    name: Analyze (Lint) Backend and Frontend
     runs-on: ubuntu-latest
-    stage: test
+    needs: build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
 
-      - name: Install backend dependencies
-        run: |
-          cd backend
-          npm install
+      # Backend linting
+      - name: Backend lint
         working-directory: backend
+        run: npm run lint
 
-      - name: Run backend unit tests
-        run: |
-          cd backend
-          # Run tests excluding dist directory if applicable
-          npm test
-        working-directory: backend
+      # Frontend linting
+      - name: Frontend lint
+        working-directory: frontend
+        run: npm run lint
 
-  test-frontend:
+  test:
+    name: Test Backend and Frontend
     runs-on: ubuntu-latest
-    stage: test
-    needs: test-backend
+    needs: analyze
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
 
-      - name: Install frontend dependencies and Cypress
-        run: |
-          cd frontend
-          npm install
-          npm install cypress
+      # Backend tests
+      - name: Backend test
+        working-directory: backend
+        run: npm run test
 
-      - name: Build frontend (if required)
-        run: |
-          cd frontend
-          npm run build
-
-      - name: Run Cypress tests in frontend
-        run: |
-          cd frontend
-          npm run cypress:run
-        env:
-          CYPRESS_baseUrl: http://localhost:5173
-        continue-on-error: true
-
-      - name: Exclude dist directory from frontend test results
-        if: always()
-        run: |
-          echo "##[add-matcher]dist-report.json"
-          echo '{"pattern": "dist/**/*", "severity": "error", "message": "Excluded from test results"}' > dist-report.json
-
-      - name: Upload frontend test results
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: frontend-test-results
-          path: |
-            dist-report.json
+      # Frontend tests with Cypress
+      - name: Frontend tests with Cypress
+        working-directory: frontend
+        run: npm install && npx cypress run

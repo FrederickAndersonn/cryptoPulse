@@ -121,6 +121,10 @@ jobs:
         with:
           node-version: '16'
 
+      - name: Run Frontend 
+        working-directory: frontend
+        run: npm install && npm run dev  
+         
       # Frontend tests with Cypress
       - name: Frontend tests with Cypress
         working-directory: frontend

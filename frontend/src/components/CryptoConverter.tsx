@@ -77,7 +77,7 @@ const CryptoConverter = () => {
   return (
     <Box p={8} bg={useColorModeValue('gray.50', 'gray.900')} minHeight="100vh" display="flex" justifyContent="center" alignItems="center">
       <Box maxW="md" w="full" p={8} bg={useColorModeValue('white', 'gray.700')} borderRadius="md" boxShadow="0 4px 12px rgba(0, 0, 0, 0.15)">
-        <Heading as="h1" mb={6} textAlign="center" fontSize="2xl" fontWeight="bold" color={useColorModeValue('black', 'white')}>
+        <Heading as="h1" mb={6} textAlign="center" fontSize="2xl" fontWeight="bold" color={useColorModeValue('black', 'white')} data-testid="heading">
           Crypto Converter
         </Heading>
         <VStack spacing={4}>
@@ -91,6 +91,7 @@ const CryptoConverter = () => {
               required
               size="lg"
               focusBorderColor="teal.400"
+              data-testid="amount-input"
             />
           </FormControl>
           <FormControl id="fromCurrency">
@@ -100,6 +101,7 @@ const CryptoConverter = () => {
               onChange={(e) => setFromCurrency(e.target.value)}
               size="lg"
               focusBorderColor="teal.400"
+              data-testid="from-currency-select"
             >
               <option value="USD">USD - US Dollar</option>
               <option value="EUR">EUR - Euro</option>
@@ -125,7 +127,7 @@ const CryptoConverter = () => {
             </Select>
           </FormControl>
           {loading ? (
-            <Spinner size="xl" color="teal.400" />
+            <Spinner size="xl" color="teal.400" data-testid="loading-spinner" />
           ) : (
             <FormControl id="toCurrency">
               <FormLabel>To Currency</FormLabel>
@@ -134,6 +136,7 @@ const CryptoConverter = () => {
                 onChange={(e) => setToCurrency(e.target.value)}
                 size="lg"
                 focusBorderColor="teal.400"
+                data-testid="to-currency-select"
               >
                 {cryptoList.map((crypto) => (
                   <option key={crypto.id} value={crypto.id}>
@@ -149,10 +152,11 @@ const CryptoConverter = () => {
             width="full"
             size="lg"
             isDisabled={loading}
+            data-testid="convert-button"
           >
             Convert
           </Button>
-          {result && <Text mt={4} fontSize="lg" >{result}</Text>}
+          {result && <Text mt={4} fontSize="lg" data-testid="result">{result}</Text>}
         </VStack>
       </Box>
     </Box>

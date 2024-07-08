@@ -32,7 +32,7 @@ const CreatePost: React.FC = () => {
     const token = localStorage.getItem('token');
     if (token) {
       const decoded: DecodedToken = jwtDecode(token);
-      const userId = decoded.user.id;
+      const userId = decoded.user?.id;
       setAuthor((prevState) => ({ ...prevState, id: userId }));
 
       axios.get(`https://cryptopulse-n0ol.onrender.com/register/user/${userId}`)
@@ -90,12 +90,13 @@ const CreatePost: React.FC = () => {
         bg={isDark ? 'gray.700' : 'white'}
         color={isDark ? 'white' : 'black'}
         width="40%"
+        data-testid="create-post-box"
       >
         <Heading as="h2" mb="6" textAlign="center" color={isDark ? 'white' : 'black'}>
           Create Post
         </Heading>
         <FormControl>
-          <FormLabel color={isDark ? 'white' : 'black'}>Heading</FormLabel>
+          <FormLabel color={isDark ? 'white' : 'black'} data-testid="create-post-heading">Heading</FormLabel>
           <Input
             type="text"
             placeholder="Enter post heading"
@@ -104,6 +105,7 @@ const CreatePost: React.FC = () => {
             bg={isDark ? 'gray.800' : 'white'}
             color={isDark ? 'white' : 'black'}
             borderColor={isDark ? 'gray.600' : 'gray.200'}
+            data-testid="create-post-heading-input"
           />
         </FormControl>
         <FormControl mt="4">
@@ -118,6 +120,7 @@ const CreatePost: React.FC = () => {
             bg={isDark ? 'gray.800' : 'white'}
             color={isDark ? 'white' : 'black'}
             borderColor={isDark ? 'gray.600' : 'gray.200'}
+            data-testid="create-post-description-input"
           />
         </FormControl>
         <Button
@@ -125,6 +128,7 @@ const CreatePost: React.FC = () => {
           colorScheme="blue"
           width="full"
           onClick={handleCreatePost}
+          data-testid="create-post-button"
         >
           Create Post
         </Button>

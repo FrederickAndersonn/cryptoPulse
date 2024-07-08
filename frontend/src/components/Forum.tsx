@@ -138,19 +138,19 @@ const Forum: React.FC = () => {
 
   if (loading) {
     return (
-      <Flex height="100vh" alignItems="center" justifyContent="center">
+      <Flex height="100vh" alignItems="center" justifyContent="center" data-testid="loading-spinner">
         <Spinner size="xl" />
       </Flex>
     );
   }
 
   return (
-    <Box width="100%" p={8} bg={bg} minHeight="100vh">
-      <Heading as="h1" mb={4} textAlign="center" color={textColor}>
+    <Box width="100%" p={8} bg={bg} minHeight="100vh" data-testid="forum-box">
+      <Heading as="h1" mb={4} textAlign="center" color={textColor} data-testid="forum-heading">
         Forum
       </Heading>
       <Flex justifyContent="center" mb={4}>
-        <Button onClick={() => navigate('/create-post')} colorScheme="teal">
+        <Button onClick={() => navigate('/create-post')} colorScheme="teal" data-testid="create-post-button">
           Create Post
         </Button>
       </Flex>
@@ -162,6 +162,7 @@ const Forum: React.FC = () => {
           width="100%"
           bg={boxBg}
           color={textColor}
+          data-testid="search-input"
         />
       </Box>
       <Stack spacing={4}>
@@ -181,6 +182,7 @@ const Forum: React.FC = () => {
               _hover={{ bg: hoverBg }}
               cursor="pointer"
               onClick={() => handlePostClick(post._id)}
+              data-testid={`post-${post._id}`}
             >
               <Heading fontSize="xl" color={textColor}>
                 {post.heading}
@@ -208,6 +210,7 @@ const Forum: React.FC = () => {
                     mr={2}
                     bg={votedPosts[post._id] === 1 ? 'teal.500' : undefined}
                     _hover={{ bg: 'teal.400' }}
+                    data-testid={`upvote-button-${post._id}`}
                   />
                   <IconButton
                     aria-label="Downvote post"
@@ -219,6 +222,7 @@ const Forum: React.FC = () => {
                     size="sm"
                     bg={votedPosts[post._id] === -1 ? 'red.500' : undefined}
                     _hover={{ bg: 'red.400' }}
+                    data-testid={`downvote-button-${post._id}`}
                   />
                 </Flex>
               </Flex>
@@ -226,13 +230,14 @@ const Forum: React.FC = () => {
           ))}
       </Stack>
       <Flex justifyContent="space-between" mt={4}>
-        <Button onClick={handlePreviousPage} disabled={page === 1}>
+        <Button onClick={handlePreviousPage} disabled={page === 1} data-testid="previous-page-button">
           Previous
         </Button>
-        <Text color={textColor}>Page {page}</Text>
+        <Text color={textColor} data-testid="page-number">Page {page}</Text>
         <Button
           onClick={handleNextPage}
           disabled={page * postsPerPage >= posts.length}
+          data-testid="next-page-button"
         >
           Next
         </Button>

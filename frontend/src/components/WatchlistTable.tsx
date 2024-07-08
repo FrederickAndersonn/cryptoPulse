@@ -81,14 +81,14 @@ const WatchlistTable: React.FC<WatchlistTableProps> = ({ watchlist, setWatchlist
   };
 
   return (
-    <Table variant="simple" bg={tableBg} borderRadius="lg" boxShadow="lg" minWidth="100%">
+    <Table variant="simple" bg={tableBg} borderRadius="lg" boxShadow="lg" minWidth="100%" data-testid="watchlist-table">
       <Thead>
         <Tr>
-          <Th color={textColor}>Name</Th>
-          <Th color={textColor}>Symbol</Th>
-          <Th color={textColor}>Price in USD</Th>
-          <Th color={textColor}>Last 7 Days</Th>
-          <Th color={textColor}>Actions</Th>
+          <Th color={textColor} data-testid="column-name">Name</Th>
+          <Th color={textColor} data-testid="column-symbol">Symbol</Th>
+          <Th color={textColor} data-testid="column-price">Price in USD</Th>
+          <Th color={textColor} data-testid="column-graph">Last 7 Days</Th>
+          <Th color={textColor} data-testid="column-actions">Actions</Th>
         </Tr>
       </Thead>
       <Tbody>
@@ -98,20 +98,21 @@ const WatchlistTable: React.FC<WatchlistTableProps> = ({ watchlist, setWatchlist
             onClick={() => handleRowClick(coin.id)}
             cursor="pointer"
             _hover={{ bg: hoverBg }}
+            data-testid={`coin-row-${coin.id}`}
           >
             <Td>
               <Flex align="center">
-                <Image src={coin.image} alt={`${coin.name} Icon`} boxSize="30px" mr={2} />
-                <Text color={textColor}>{coin.name}</Text>
+                <Image src={coin.image} alt={`${coin.name} Icon`} boxSize="30px" mr={2} data-testid={`coin-image-${coin.id}`} />
+                <Text color={textColor} data-testid={`coin-name-${coin.id}`}>{coin.name}</Text>
               </Flex>
             </Td>
-            <Td color={textColor}>{coin.symbol ? coin.symbol.toUpperCase() : 'N/A'}</Td>
-            <Td color={textColor}>${coin.current_price ? coin.current_price.toFixed(2) : 'N/A'}</Td>
-            <Td>
+            <Td color={textColor} data-testid={`coin-symbol-${coin.id}`}>{coin.symbol ? coin.symbol.toUpperCase() : 'N/A'}</Td>
+            <Td color={textColor} data-testid={`coin-price-${coin.id}`}>${coin.current_price ? coin.current_price.toFixed(2) : 'N/A'}</Td>
+            <Td data-testid={`coin-graph-${coin.id}`}>
               <CoinGraph7Days data={coin.last_7_days || []} /> {/* Add the graph component */}
             </Td>
             <Td>
-              <Button colorScheme="red" onClick={(e) => handleRemoveFromWatchlist(e, coin.id)}>
+              <Button colorScheme="red" onClick={(e) => handleRemoveFromWatchlist(e, coin.id)} data-testid={`remove-button-${coin.id}`}>
                 Remove
               </Button>
             </Td>

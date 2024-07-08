@@ -91,7 +91,7 @@ const CoinTable: React.FC = () => {
 
   return (
     <Box width="100%" p={4} bg={bg} minHeight="100vh">
-      <Heading as="h1" mb={4} textAlign="center" color={textColor}>
+      <Heading as="h1" mb={4} textAlign="center" color={textColor} data-testid="coin-table-heading">
         All Coins
       </Heading>
       <Box mb={4}>
@@ -102,10 +102,11 @@ const CoinTable: React.FC = () => {
           width="100%"
           bg={tableBg}
           color={textColor}
+          data-testid="coin-search-input"
         />
       </Box>
       <div style={{ overflowX: 'auto' }}>
-        <Table variant="simple" bg={tableBg} borderRadius="lg" boxShadow="lg" minWidth="100%">
+        <Table variant="simple" bg={tableBg} borderRadius="lg" boxShadow="lg" minWidth="100%" data-testid="coin-table">
           <Thead>
             <Tr>
               <Th color={textColor}>Name</Th>
@@ -123,23 +124,24 @@ const CoinTable: React.FC = () => {
                 onClick={() => handleRowClick(coin.id)}
                 cursor="pointer"
                 _hover={{ bg: hoverBg }}
+                data-testid={`coin-row-${coin.id}`}
               >
                 <Td>
                   <Flex align="center">
-                    <Image src={coin.image} alt={`${coin.name} Icon`} boxSize="30px" mr={2} />
-                    <Text color={textColor}>{coin.name}</Text>
+                    <Image src={coin.image} alt={`${coin.name} Icon`} boxSize="30px" mr={2} data-testid={`coin-image-${coin.id}`} />
+                    <Text color={textColor} data-testid={`coin-name-${coin.id}`}>{coin.name}</Text>
                   </Flex>
                 </Td>
-                <Td color={textColor}>{coin.symbol.toUpperCase()}</Td>
-                <Td color={textColor}>
+                <Td color={textColor} data-testid={`coin-symbol-${coin.id}`}>{coin.symbol.toUpperCase()}</Td>
+                <Td color={textColor} data-testid={`coin-price-btc-${coin.id}`}>
                   {bitcoinPrice ? (coin.current_price / bitcoinPrice).toFixed(12) : 'N/A'}
                 </Td>
-                <Td color={textColor}>${coin.current_price.toFixed(2)}</Td>
-                <Td>
+                <Td color={textColor} data-testid={`coin-price-usd-${coin.id}`}>${coin.current_price.toFixed(2)}</Td>
+                <Td data-testid={`coin-graph-${coin.id}`}>
                   <CoinGraph7Days data={coin.last_7_days || []} />
                 </Td>
                 <Td>
-                  <Button onClick={(e) => handleAddToWatchlist(e, coin.id)}>Add to Watchlist</Button>
+                  <Button onClick={(e) => handleAddToWatchlist(e, coin.id)} data-testid={`add-to-watchlist-button-${coin.id}`}>Add to Watchlist</Button>
                 </Td>
               </Tr>
             ))}
@@ -147,11 +149,11 @@ const CoinTable: React.FC = () => {
         </Table>
       </div>
       <Flex justifyContent="space-between" mt={4}>
-        <Button onClick={handlePreviousPage} disabled={page === 1}>
+        <Button onClick={handlePreviousPage} disabled={page === 1} data-testid="previous-page-button">
           Previous
         </Button>
-        <Text color={textColor}>Page {page}</Text>
-        <Button onClick={handleNextPage}>Next</Button>
+        <Text color={textColor} data-testid="page-number">Page {page}</Text>
+        <Button onClick={handleNextPage} data-testid="next-page-button">Next</Button>
       </Flex>
     </Box>
   );

@@ -66,12 +66,13 @@ const Signup: React.FC = () => {
         p="8"
         boxShadow="md"
         bg={isDark ? 'gray.700' : 'white'}
+        data-testid="signup-box"
       >
-        <Heading as="h2" mb="6" textAlign="center" color={isDark ? 'white' : 'black'}>
+        <Heading as="h2" mb="6" textAlign="center" color={isDark ? 'white' : 'black'} data-testid="signup-heading">
           Sign Up
         </Heading>
         {error && (
-          <Alert status="error" mb="4">
+          <Alert status="error" mb="4" data-testid="signup-error">
             <AlertIcon />
             {error}
           </Alert>
@@ -86,6 +87,7 @@ const Signup: React.FC = () => {
             bg={isDark ? 'gray.800' : 'white'}
             color={isDark ? 'white' : 'black'}
             borderColor={isDark ? 'gray.600' : 'gray.200'}
+            data-testid="signup-name"
           />
         </FormControl>
         <FormControl mt="4">
@@ -98,6 +100,7 @@ const Signup: React.FC = () => {
             bg={isDark ? 'gray.800' : 'white'}
             color={isDark ? 'white' : 'black'}
             borderColor={isDark ? 'gray.600' : 'gray.200'}
+            data-testid="signup-email"
           />
         </FormControl>
         <FormControl mt="4">
@@ -111,9 +114,10 @@ const Signup: React.FC = () => {
             color={isDark ? 'white' : 'black'}
             borderColor={isDark ? 'gray.600' : 'gray.200'}
             isInvalid={passwordError !== null} // Highlight input if password is invalid
+            data-testid="signup-password"
           />
           {passwordError && (
-            <Text mt="2" fontSize="sm" color="red.500">
+            <Text mt="2" fontSize="sm" color="red.500" data-testid="password-error">
               {passwordError}
             </Text>
           )}
@@ -126,12 +130,13 @@ const Signup: React.FC = () => {
           isLoading={isLoading} // Display loading state
           loadingText="Signing up..."
           disabled={isLoading || password.length < 5} // Disable button while loading or if password is invalid
+          data-testid="signup-button"
         >
           Sign Up
         </Button>
         <Text mt="4" textAlign="center" color={isDark ? 'white' : 'black'}>
           Already have an account?{' '}
-          <ChakraLink as={RouterLink} to="/login" color="blue.500">
+          <ChakraLink as={RouterLink} to="/login" color="blue.500" data-testid="signup-login-link">
             Login here
           </ChakraLink>
         </Text>

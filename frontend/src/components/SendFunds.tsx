@@ -90,14 +90,15 @@ const SendFundsForm: React.FC = () => {
         bg={isDark ? "gray.700" : "white"}
         color={isDark ? "white" : "black"}
         width="40%"
+        data-testid="send-funds-box"
       >
-        <Heading as="h1" size="lg" mb={4} textAlign="center">
+        <Heading as="h1" size="lg" mb={4} textAlign="center" data-testid="send-funds-heading">
           Send Funds
         </Heading>
         <Text mb={6} textAlign="center">
           Enter the details below to send funds to another account.
         </Text>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} data-testid="send-funds-form">
           <FormControl id="destinationID" mb={4}>
             <FormLabel><FaAddressCard />Destination Address</FormLabel>
             <Input
@@ -108,6 +109,7 @@ const SendFundsForm: React.FC = () => {
               bg={isDark ? "gray.800" : "white"}
               color={isDark ? "white" : "black"}
               _placeholder={{ color: isDark ? "gray.400" : "gray.600" }}
+              data-testid="send-funds-destination-id"
             />
           </FormControl>
 
@@ -121,6 +123,7 @@ const SendFundsForm: React.FC = () => {
               bg={isDark ? "gray.800" : "white"}
               color={isDark ? "white" : "black"}
               _placeholder={{ color: isDark ? "gray.400" : "gray.600" }}
+              data-testid="send-funds-amount"
             />
           </FormControl>
 
@@ -133,6 +136,7 @@ const SendFundsForm: React.FC = () => {
               bg={isDark ? "gray.800" : "white"}
               color={isDark ? "white" : "black"}
               _placeholder={{ color: isDark ? "gray.400" : "gray.600" }}
+              data-testid="send-funds-memo"
             />
           </FormControl>
 
@@ -144,6 +148,7 @@ const SendFundsForm: React.FC = () => {
             mt={4}
             bg={isDark ? "teal.600" : undefined} // Optional: Adjust button background for dark mode
             _hover={{ bg: isDark ? "teal.700" : "teal.500" }} // Optional: Adjust hover background for dark mode
+            data-testid="send-funds-button"
           >
             Send Funds
           </Button>

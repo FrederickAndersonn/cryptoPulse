@@ -35,7 +35,7 @@ const Login: React.FC = () => {
       
       navigate('/coins');
       window.location.reload(); 
-    } catch (error:any) {
+    } catch (error: any) {
       console.error('Login failed:', error.message);
       toast({
         title: 'Login Failed',
@@ -48,7 +48,6 @@ const Login: React.FC = () => {
       setIsLoading(false); // Stop loading, whether success or failure
     }
   };
-  
 
   return (
     <Flex height="100vh" alignItems="center" justifyContent="center" bg={isDark ? 'gray.900' : 'gray.50'}>
@@ -60,8 +59,9 @@ const Login: React.FC = () => {
         p="8"
         boxShadow="md"
         bg={isDark ? 'gray.700' : 'white'}
+        data-testid="login-box"
       >
-        <Heading as="h2" mb="6" textAlign="center" color={isDark ? 'white' : 'black'}>
+        <Heading as="h2" mb="6" textAlign="center" color={isDark ? 'white' : 'black'} data-testid="login-heading">
           Login
         </Heading>
         <FormControl>
@@ -74,6 +74,7 @@ const Login: React.FC = () => {
             bg={isDark ? 'gray.800' : 'white'}
             color={isDark ? 'white' : 'black'}
             borderColor={isDark ? 'gray.600' : 'gray.200'}
+            data-testid="login-email"
           />
         </FormControl>
         <FormControl mt="4">
@@ -86,6 +87,7 @@ const Login: React.FC = () => {
             bg={isDark ? 'gray.800' : 'white'}
             color={isDark ? 'white' : 'black'}
             borderColor={isDark ? 'gray.600' : 'gray.200'}
+            data-testid="login-password"
           />
         </FormControl>
         <Button
@@ -96,12 +98,13 @@ const Login: React.FC = () => {
           isLoading={isLoading} // Display loading state
           loadingText="Logging in..."
           disabled={isLoading} // Disable button while loading
+          data-testid="login-button"
         >
           Login
         </Button>
         <Text mt="4" textAlign="center" color={isDark ? 'white' : 'black'}>
           Don't have an account?{' '}
-          <ChakraLink as={RouterLink} to="/signup" color="blue.500">
+          <ChakraLink as={RouterLink} to="/signup" color="blue.500" data-testid="login-signup-link">
             Sign up here
           </ChakraLink>
         </Text>

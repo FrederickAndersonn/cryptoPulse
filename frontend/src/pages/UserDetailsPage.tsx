@@ -139,23 +139,23 @@ const UserDetails: React.FC = () => {
   return (
     <Box width="100%" py={10} px={24} bg={bg} minHeight="100vh">
       <Flex direction="column" align="center" maxW="100%" mx="auto">
-        <Heading as="h1" mb={4} textAlign="center" color={textColor}>
+        <Heading as="h1" mb={4} textAlign="center" color={textColor} data-testid="user-details-heading">
           User Details
         </Heading>
         <Box bg={boxBg} p={4} borderRadius="md" boxShadow="md" width="100%">
-          <Text fontSize="lg" color={textColor}>
+          <Text fontSize="lg" color={textColor} data-testid="user-name">
             <strong>Name:</strong> {userProfile.name}
           </Text>
-          <Text fontSize="lg" color={textColor}>
+          <Text fontSize="lg" color={textColor} data-testid="user-email">
             <strong>Email:</strong> {userProfile.email}
           </Text>
-          <Text fontSize="lg" color={textColor}>
+          <Text fontSize="lg" color={textColor} data-testid="user-publicKey">
             <strong>Public Key:</strong> {userProfile.publicKey}
           </Text>
-          <Button mt={4} mr={4} colorScheme="blue" onClick={() => navigate('/walletdetails')}>
+          <Button mt={4} mr={4} colorScheme="blue" onClick={() => navigate('/walletdetails')} data-testid="wallet-details-button">
             Go to Wallet Details
           </Button>
-          <Button mt={4} colorScheme="teal" onClick={onOpen}>
+          <Button mt={4} colorScheme="teal" onClick={onOpen} data-testid="update-password-button">
             Update Password
           </Button>
         </Box>
@@ -163,27 +163,27 @@ const UserDetails: React.FC = () => {
       </Flex>
 
       <Spacer height={8} />
-      <Heading as="h2" size="lg" mt={6} mb={4} textAlign="center" color={textColor}>
+      <Heading as="h2" size="lg" mt={6} mb={4} textAlign="center" color={textColor} data-testid="user-posts-heading">
         Your Posts
       </Heading>
       {userPosts.length > 0 && (
         <Box bg={boxBg} p={4} borderRadius="md" boxShadow="md" width="100%">
           <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" bg={boxBg}>
-            <Heading fontSize="lg" color={textColor}>
+            <Heading fontSize="lg" color={textColor} data-testid="post-heading">
               {userPosts[currentPostIndex].heading}
             </Heading>
-            <Text mt={4} color={textColor}>
+            <Text mt={4} color={textColor} data-testid="post-description">
               {truncateDescription(userPosts[currentPostIndex].description)}
             </Text>
-            <Button mt={4} colorScheme="red" onClick={() => handleDeletePost(userPosts[currentPostIndex]._id)}>
+            <Button mt={4} colorScheme="red" onClick={() => handleDeletePost(userPosts[currentPostIndex]._id)} data-testid="delete-post-button">
               Delete Post
             </Button>
           </Box>
           <Flex mt={4} justifyContent="space-between">
-            <Button onClick={handlePrevPost} isDisabled={currentPostIndex === 0}>
+            <Button onClick={handlePrevPost} isDisabled={currentPostIndex === 0} data-testid="prev-post-button">
               Previous
             </Button>
-            <Button onClick={handleNextPost} isDisabled={currentPostIndex === userPosts.length - 1}>
+            <Button onClick={handleNextPost} isDisabled={currentPostIndex === userPosts.length - 1} data-testid="next-post-button">
               Next
             </Button>
           </Flex>
@@ -205,6 +205,7 @@ const UserDetails: React.FC = () => {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   required
+                  data-testid="current-password-input"
                 />
               </FormControl>
               <FormControl mb={4}>
@@ -214,6 +215,7 @@ const UserDetails: React.FC = () => {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   required
+                  data-testid="new-password-input"
                 />
               </FormControl>
               <FormControl mb={4}>
@@ -223,20 +225,21 @@ const UserDetails: React.FC = () => {
                   value={confirmNewPassword}
                   onChange={(e) => setConfirmNewPassword(e.target.value)}
                   required
+                  data-testid="confirm-new-password-input"
                 />
               </FormControl>
-              <Button type="submit" colorScheme="teal" width="full">
+              <Button type="submit" colorScheme="teal" width="full" data-testid="submit-password-button">
                 Update Password
               </Button>
             </form>
             {passwordUpdateMessage && (
-              <Text mt={4}>
+              <Text mt={4} data-testid="password-update-message">
                 {passwordUpdateMessage}
               </Text>
             )}
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button colorScheme="blue" mr={3} onClick={onClose} data-testid="close-password-modal-button">
               Close
             </Button>
           </ModalFooter>

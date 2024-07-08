@@ -58,7 +58,7 @@ const PostDetails: React.FC = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const decoded: { user: { id: string } } | null = token ? jwtDecode(token) : null;
-  const userId = decoded ? decoded.user.id : '';
+  const userId = decoded?.user.id || '';
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -217,86 +217,89 @@ const PostDetails: React.FC = () => {
   post.comments.sort((a, b) => b.likes - a.likes);
 
   return (
-    <Box p={8} bg={bg} minHeight="100vh">
-      <Box borderWidth="1px" borderRadius="lg" p={5} boxShadow="md" bg={boxBg}>
-        <Heading mb={6} textAlign="center" color={textColor}>
-          {post.heading}
+    <Box p={8} bg={bg} minHeight="100vh" data-testid="post-details-page">
+    <Box borderWidth="1px" borderRadius="lg" p={5} boxShadow="md" bg={boxBg}>
+      <Heading mb={6} textAlign="center" color={textColor} data-testid="post-heading">
+        {post.heading}
+      </Heading>
+      <Text mt={4} color={textColor} data-testid="post-description">
+        {post.description}
+      </Text>
+      <Text mt={4} fontSize="sm" color="gray.500" data-testid="post-author">
+        By {post.author.username} on {new Date(post.date).toLocaleDateString()}
+      </Text>
+      <Flex mt={4} justifyContent="space-between" alignItems="center">
+        <Button colorScheme="teal" onClick={handleDonate} data-testid="donate-button">
+          Donate
+        </Button>
+      </Flex>
+
+      <Box mt={6} data-testid="add-comment-section">
+        <Heading size="md" mb={4} color={textColor}>
+          Add a Comment
         </Heading>
-        <Text mt={4} color={textColor}>
-          {post.description}
-        </Text>
-        <Text mt={4} fontSize="sm" color="gray.500">
-          By {post.author.username} on {new Date(post.date).toLocaleDateString()}
-        </Text>
-        <Flex mt={4} justifyContent="space-between" alignItems="center">
-          <Button colorScheme="teal" onClick={handleDonate}>
-            Donate
-          </Button>
-        </Flex>
+        <FormControl>
+          <FormLabel color={formLabelColor}>Comment</FormLabel>
+          <Input
+            type="text"
+            placeholder="Enter your comment"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            bg={inputBg}
+            color={textColor}
+            borderColor={borderColor}
+            data-testid="comment-input"
+          />
+        </FormControl>
+        {comment.trim() && (
+          <Flex justifyContent="flex-end">
+            <Button mt={4} colorScheme="blue" onClick={handleAddComment} data-testid="submit-comment-button">
+              Submit
+            </Button>
+          </Flex>
+        )}
+      </Box>
 
-        <Box mt={6}>
-          <Heading size="md" mb={4} color={textColor}>
-            Add a Comment
-          </Heading>
-          <FormControl>
-            <FormLabel color={formLabelColor}>Comment</FormLabel>
-            <Input
-              type="text"
-              placeholder="Enter your comment"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              bg={inputBg}
-              color={textColor}
-              borderColor={borderColor}
-            />
-          </FormControl>
-          {comment.trim() && (
-            <Flex justifyContent="flex-end">
-              <Button mt={4} colorScheme="blue" onClick={handleAddComment}>
-                Submit
-              </Button>
-            </Flex>
-          )}
-        </Box>
-
-        <Box mt={10}>
-          <Heading size="md" mb={4} color={textColor}>
-            Comments
-          </Heading>
-          <Stack spacing={5}>
-            {post.comments.map(comment => (
-              <Box key={comment._id} p={4} shadow="md" borderWidth="1px" borderRadius="md" bg={boxBg}>
-                <Text color={textColor}>{comment.text}</Text>
-                <Text mt={2} fontSize="sm" color="gray.500">
-                  By {comment.author.username} on {new Date(comment.date).toLocaleDateString()}
-                </Text>
-                <Flex mt={2} justifyContent="space-between" alignItems="center">
-                  <Flex>
-                    <IconButton
-                      aria-label="Like comment"
-                      icon={<FaThumbsUp />}
-                      onClick={() => handleLike(comment._id)}
-                      size="sm"
-                      mr={2}
-                      colorScheme={comment.likedBy.includes(userId) ? 'green' : undefined}
-                    />
-                    <IconButton
-                      aria-label="Unlike comment"
-                      icon={<FaThumbsDown />}
-                      onClick={() => handleUnlike(comment._id)}
-                      size="sm"
-                      colorScheme={comment.dislikedBy.includes(userId) ? 'red' : undefined}
-                    />
-                  </Flex>
-                  <Text color={textColor}>{comment.likes} Likes</Text>
+      <Box mt={10} data-testid="comments-section">
+        <Heading size="md" mb={4} color={textColor}>
+          Comments
+        </Heading>
+        <Stack spacing={5}>
+          {post.comments.map(comment => (
+            <Box key={comment._id} p={4} shadow="md" borderWidth="1px" borderRadius="md" bg={boxBg} data-testid={`comment-${comment._id}`}>
+              <Text color={textColor} data-testid={`comment-text-${comment._id}`}>{comment.text}</Text>
+              <Text mt={2} fontSize="sm" color="gray.500" data-testid={`comment-author-${comment._id}`}>
+                By {comment.author.username} on {new Date(comment.date).toLocaleDateString()}
+              </Text>
+              <Flex mt={2} justifyContent="space-between" alignItems="center">
+                <Flex>
+                  <IconButton
+                    aria-label="Like comment"
+                    icon={<FaThumbsUp />}
+                    onClick={() => handleLike(comment._id)}
+                    size="sm"
+                    mr={2}
+                    colorScheme={comment.likedBy.includes(userId) ? 'green' : undefined}
+                    data-testid={`like-button-${comment._id}`}
+                  />
+                  <IconButton
+                    aria-label="Unlike comment"
+                    icon={<FaThumbsDown />}
+                    onClick={() => handleUnlike(comment._id)}
+                    size="sm"
+                    colorScheme={comment.dislikedBy.includes(userId) ? 'red' : undefined}
+                    data-testid={`unlike-button-${comment._id}`}
+                  />
                 </Flex>
-              </Box>
-            ))}
-          </Stack>
-        </Box>
+                <Text color={textColor} data-testid={`comment-likes-${comment._id}`}>{comment.likes} Likes</Text>
+              </Flex>
+            </Box>
+          ))}
+        </Stack>
       </Box>
     </Box>
-  );
+  </Box>
+);
 };
 
 export default PostDetails;

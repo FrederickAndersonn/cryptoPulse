@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   analyze-backend:
@@ -20,17 +20,19 @@ jobs:
         with:
           node-version: '14'
 
+      - name: Verify directory contents
+        run: ls -la
+        working-directory: backend  # Adjust if needed
+
       - name: Install backend dependencies
-        run: |
-          cd backend
-          npm install
+        run: npm install
         working-directory: backend
 
       - name: Lint backend code
         run: |
-          cd backend
-          # Run ESLint excluding dist directory
-          eslint . --ignore-pattern 'backend/dist/*'
+          # Ensure ESLint is installed globally or locally in backend directory
+          npm install eslint
+          npx eslint .
         working-directory: backend
 
   test-backend:
@@ -45,16 +47,11 @@ jobs:
           node-version: '14'
 
       - name: Install backend dependencies
-        run: |
-          cd backend
-          npm install
+        run: npm install
         working-directory: backend
 
       - name: Run backend unit tests
-        run: |
-          cd backend
-          # Run tests excluding dist directory if applicable
-          npm test
+        run: npm test
         working-directory: backend
 
   test-frontend:
@@ -71,19 +68,16 @@ jobs:
 
       - name: Install frontend dependencies and Cypress
         run: |
-          cd frontend
           npm install
           npm install cypress
+        working-directory: frontend  # Adjust if needed
 
       - name: Build frontend (if required)
-        run: |
-          cd frontend
-          npm run build
+        run: npm run build
+        working-directory: frontend
 
       - name: Run Cypress tests in frontend
-        run: |
-          cd frontend
-          npm run cypress:run
+        run: npm run cypress:run
         env:
           CYPRESS_baseUrl: http://localhost:5173
         continue-on-error: true

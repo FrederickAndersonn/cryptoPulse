@@ -11,7 +11,6 @@ on:
 jobs:
   analyze-backend:
     runs-on: ubuntu-latest
-    stage: analyze
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -36,7 +35,6 @@ jobs:
 
   test-backend:
     runs-on: ubuntu-latest
-    stage: test
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -61,7 +59,6 @@ jobs:
 
   test-frontend:
     runs-on: ubuntu-latest
-    stage: test
     needs: test-backend
     steps:
       - name: Checkout repository

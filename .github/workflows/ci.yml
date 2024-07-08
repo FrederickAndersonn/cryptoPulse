@@ -10,7 +10,6 @@ on:
 
 jobs:
   backend_tests:
-    name: Backend Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -20,6 +19,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14'
+
+      - name: Install Babel and dependencies
+        run: npm install @babel/core @babel/cli @babel/preset-env --save-dev
+
+      - name: Transpile code with Babel
+        run: npx babel . --out-dir dist --ignore "node_modules"
 
       - name: Backend lint and test
         working-directory: backend

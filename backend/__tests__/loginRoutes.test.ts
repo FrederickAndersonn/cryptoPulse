@@ -1,9 +1,10 @@
 import request from 'supertest';
-import { app, server } from '../server'; // Import the Express app and server
+import express from 'express';
 import User, { UserDocument } from '../models/user';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import loginRouter from '../routes/loginRoutes';
 
 // Mock User model
 jest.mock('../models/user');
@@ -17,13 +18,14 @@ const mockedBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
 jest.mock('jsonwebtoken');
 const mockedJwt = jwt as jest.Mocked<typeof jwt>;
 
+// Create a mock Express app
+const app = express();
+app.use(express.json());
+app.use('/login', loginRouter);
+
 describe('POST /login', () => {
   afterEach(() => {
     jest.clearAllMocks(); // Clear mocks after each test
-  });
-
-  afterAll((done) => {
-    server.close(done); // Close server after all tests
   });
 
   it('should return a token and user id if credentials are valid', async () => {
@@ -54,7 +56,7 @@ describe('POST /login', () => {
 
     // Mock jwt.sign
     const token = 'mockedToken';
-    mockedJwt.sign.mockImplementation((payload, secret, options, callback) => {
+    mockedJwt.sign.mockImplementation((_payload, _secret, _options, callback) => {
       callback(null, token);
     });
 
@@ -68,7 +70,7 @@ describe('POST /login', () => {
     expect(mockedBcrypt.compare).toHaveBeenCalledWith(password, user.password);
     expect(mockedJwt.sign).toHaveBeenCalledWith(
       { user: { id: user.id } },
-      expect.any(String),
+      "my secret token",
       { expiresIn: 360000 },
       expect.any(Function)
     );

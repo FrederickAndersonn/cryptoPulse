@@ -35,7 +35,7 @@ app.use("/user", userDetailsRoutes);
 app.use('/ai', aiRoutes);
 
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
   console.log("CryptoPulse has started on port", PORT);
 });

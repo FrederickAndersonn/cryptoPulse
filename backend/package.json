@@ -220,7 +220,7 @@
     "typescript": "^5.4.5"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --detectOpenHandles --verbose --maxWorkers=1",
     "start": "ts-node server.ts",
     "lint": "eslint . ",
     "build": "tsc",

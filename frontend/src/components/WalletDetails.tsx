@@ -65,6 +65,7 @@ const WalletDetails: React.FC = () => {
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleTransfer = () => {
